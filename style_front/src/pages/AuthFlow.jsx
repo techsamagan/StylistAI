@@ -3,6 +3,7 @@ import {
   Mail, Lock, ArrowRight, Check, User, 
   Sparkles, Ruler, Shirt, Briefcase 
 } from 'lucide-react';
+import { api, isApiConfigured } from '../api/client';
 
 // --- MOCK SOCIAL ICONS (SVGs) ---
 const GoogleIcon = () => (
@@ -22,10 +23,38 @@ const AppleIcon = () => (
 
 // --- COMPONENT: AUTH FORM (Login/Register) ---
 const AuthForm = ({ onAuthSuccess, mode, setMode }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async () => {
+    setError('');
+    if (!isApiConfigured()) {
+      onAuthSuccess();
+      return;
+    }
+    try {
+      setLoading(true);
+      const payload = { email, password, ...(mode === 'signup' ? { name } : {}) };
+      const res = mode === 'signup' 
+        ? await api.register(payload) 
+        : await api.login(payload);
+      if (typeof window !== 'undefined' && res?.access_token) {
+        window.localStorage.setItem('auth_token', res.access_token);
+      }
+      onAuthSuccess();
+    } catch (e) {
+      setError(e.body?.detail || e.message || 'Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="w-full max-w-md bg-white rounded-[32px] shadow-xl p-8 md:p-10 border border-gray-100 animate-fade-in-up">
       <div className="text-center mb-8">
-        <div className="w-12 h-12 bg-sage-50 text-sage-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
           <User size={24} />
         </div>
         <h2 className="text-2xl font-medium tracking-tight mb-2">
@@ -40,27 +69,50 @@ const AuthForm = ({ onAuthSuccess, mode, setMode }) => {
         {mode === 'signup' && (
            <div className="relative">
              <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-             <input type="text" placeholder="Full Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-sage-500 focus:bg-white transition-colors" />
+             <input 
+               type="text" 
+               placeholder="Full Name" 
+               value={name}
+               onChange={(e) => setName(e.target.value)}
+               className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-primary focus:bg-white transition-colors" 
+             />
            </div>
         )}
         
         <div className="relative">
           <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input type="email" placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-sage-500 focus:bg-white transition-colors" />
+          <input 
+            type="email" 
+            placeholder="Email Address" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-primary focus:bg-white transition-colors" 
+          />
         </div>
 
         <div className="relative">
           <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input type="password" placeholder="Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-sage-500 focus:bg-white transition-colors" />
+          <input 
+            type="password" 
+            placeholder="Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-primary focus:bg-white transition-colors" 
+          />
         </div>
 
         <button 
-          onClick={onAuthSuccess}
-          className="w-full bg-[#1F1F1F] text-white py-4 rounded-xl font-medium hover:scale-[1.02] transition-transform shadow-lg shadow-gray-200"
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full bg-primary text-background-dark py-4 rounded-xl font-bold hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20 disabled:opacity-60"
         >
-          {mode === 'login' ? 'Sign In' : 'Create Account'}
+          {loading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
         </button>
       </div>
+
+      {error && (
+        <p className="mt-4 text-sm text-red-600 text-center">{error}</p>
+      )}
 
       <div className="my-8 flex items-center gap-4">
         <div className="h-px bg-gray-100 flex-1" />
@@ -85,7 +137,7 @@ const AuthForm = ({ onAuthSuccess, mode, setMode }) => {
         </span>
         <button 
           onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-          className="font-semibold text-[#1F1F1F] hover:underline"
+          className="font-semibold text-primary hover:underline"
         >
           {mode === 'login' ? 'Sign Up' : 'Log In'}
         </button>
@@ -109,15 +161,15 @@ const OnboardingQuiz = ({ onComplete }) => {
       onClick={onClick}
       className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all ${
         active 
-        ? 'border-sage-500 bg-sage-50 text-sage-900' 
+        ? 'border-primary bg-primary/10 text-primary' 
         : 'border-transparent bg-gray-50 text-gray-600 hover:bg-gray-100'
       }`}
     >
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-white text-sage-600' : 'bg-white text-gray-400'}`}>
+      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-white text-primary' : 'bg-white text-gray-400'}`}>
         {icon}
       </div>
       <span className="font-medium">{label}</span>
-      {active && <Check size={18} className="ml-auto text-sage-600" />}
+      {active && <Check size={18} className="ml-auto text-primary" />}
     </button>
   );
 
@@ -125,7 +177,7 @@ const OnboardingQuiz = ({ onComplete }) => {
     <div className="w-full max-w-lg bg-white rounded-[32px] shadow-xl p-8 md:p-12 border border-gray-100 animate-fade-in-up">
       <div className="flex gap-2 mb-8">
         {[1, 2, 3].map(i => (
-          <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-[#1F1F1F]' : 'bg-gray-100'}`} />
+          <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-primary' : 'bg-gray-100'}`} />
         ))}
       </div>
 
@@ -194,7 +246,7 @@ const OnboardingQuiz = ({ onComplete }) => {
 
       <button 
         onClick={nextStep}
-        className="w-full bg-[#1F1F1F] text-white py-4 rounded-xl font-medium mt-8 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        className="w-full bg-primary text-background-dark py-4 rounded-xl font-bold mt-8 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
       >
         {step === 3 ? 'Finish Setup' : 'Continue'} <ArrowRight size={18} />
       </button>
@@ -215,7 +267,7 @@ const AuthFlow = ({ onComplete, initialView = 'login' }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark flex flex-col items-center justify-center p-6 relative overflow-hidden text-background-dark dark:text-white">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sage-100 rounded-full blur-[100px] opacity-50 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gray-100 rounded-full blur-[100px] opacity-50 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
@@ -223,7 +275,7 @@ const AuthFlow = ({ onComplete, initialView = 'login' }) => {
       {/* Brand Header - Now links back to Home */}
       <div className="absolute top-8 left-8 flex items-center gap-2 z-10">
         <a href="/" className="flex items-center gap-2 text-inherit no-underline">
-          <div className="w-8 h-8 bg-[#1F1F1F] rounded-lg text-white flex items-center justify-center text-sm font-serif italic">V</div>
+          <div className="w-8 h-8 bg-primary rounded-lg text-background-dark flex items-center justify-center text-sm font-serif italic">V</div>
           <span className="font-semibold text-xl tracking-tight">Varda.</span>
         </a>
       </div>

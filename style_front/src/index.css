@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Digital Closet Dashboard – exact colors from reference */
+:root {
+  --primary: #13ec80;
+  --background-light: #f6f8f7;
+  --background-dark: #102219;
+  --card-dark: #1a2e24;
+  --sidebar-border: #283930;
+}
+
+.dark {
+  --tw-bg-background: var(--background-dark);
+  --tw-border-sidebar: var(--sidebar-border);
+}
+
+@layer base {
+  body {
+    font-family: 'Manrope', sans-serif;
+  }
+}
+
 /* --- Custom Animations --- */
 
 /* 1. Define the Keyframes */
@@ -36,3 +56,19 @@
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+
+.animate-fade-in {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

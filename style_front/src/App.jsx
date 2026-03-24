@@ -8,6 +8,7 @@ import DashboardView from './pages/DashboardView';
 import WardrobeView from './pages/WardrobeView';
 import GeneratorView from './pages/GeneratorView';
 import AppShell from './components/AppShell';
+import { ClosetFilterProvider } from './context/ClosetFilterContext';
 
 // --- PROTECTED ROUTE COMPONENT ---
 const ProtectedRoute = ({ children, isAuthenticated }) => {
@@ -18,11 +19,21 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
   return children;
 };
 
+const DARK_KEY = 'style-dark-mode';
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('wardrobe');
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem(DARK_KEY) === '1'; } catch { return false; }
+  });
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+    try { localStorage.setItem(DARK_KEY, darkMode ? '1' : '0'); } catch (_) {}
+  }, [darkMode]);
 
   // Sync Sidebar with URL
   useEffect(() => {
@@ -33,7 +44,7 @@ const App = () => {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
-    navigate('/app/dashboard');
+    navigate('/app/wardrobe');
   };
 
   const handleLogout = () => {
@@ -60,15 +71,18 @@ const App = () => {
       {/* PROTECTED APP ROUTES */}
       <Route path="/app" element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <AppShell activeTab={activeTab} setActiveTab={handleNavClick} onLogout={handleLogout} />
+          <ClosetFilterProvider>
+            <AppShell activeTab={activeTab} setActiveTab={handleNavClick} onLogout={handleLogout} darkMode={darkMode} setDarkMode={setDarkMode} />
+          </ClosetFilterProvider>
         </ProtectedRoute>
       }>
         <Route path="dashboard" element={<DashboardView setView={handleNavClick} />} />
         <Route path="wardrobe" element={<WardrobeView />} />
         <Route path="generator" element={<GeneratorView />} />
-        
-        {/* Default redirect to dashboard if just /app is visited */}
-        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="analytics" element={<DashboardView setView={handleNavClick} />} />
+
+        {/* Default redirect when visiting /app */}
+        <Route index element={<Navigate to="wardrobe" replace />} />
       </Route>
 
       {/* Catch all 404 - Redirect to Home */}

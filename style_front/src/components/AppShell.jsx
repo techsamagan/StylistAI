@@ -1,117 +1,236 @@
-import React from 'react';
-import { 
-  LayoutGrid, Shirt, Sparkles, LogOut, 
-  BarChart2, Settings, User 
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useClosetFilters } from '../context/ClosetFilterContext';
+import { api, isApiConfigured } from '../api/client';
 
-const AppShell = ({ children, activeTab, setActiveTab, onLogout }) => (
-  <div className="min-h-screen bg-[#FAFAF8] flex text-[#1F1F1F]">
-    {/* --- DESKTOP SIDEBAR --- */}
-    <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-100 p-6 fixed h-full z-20">
-      
-      {/* Brand */}
-      <div className="flex items-center gap-2 mb-10 text-xl font-semibold tracking-tight cursor-pointer">
-        <div className="w-8 h-8 bg-[#1F1F1F] rounded-lg text-white flex items-center justify-center text-sm font-serif italic">V</div>
-        Varda.
+const CATEGORIES = [
+  { id: 'all', label: 'All Items', icon: 'apparel' },
+  { id: 'Top', label: 'Tops', icon: 'dry_cleaning' },
+  { id: 'Bottom', label: 'Bottoms', icon: 'styler' },
+  { id: 'Outerwear', label: 'Outerwear', icon: 'checkroom' },
+  { id: 'Shoes', label: 'Shoes', icon: 'steps' },
+  { id: 'Accessory', label: 'Accessories', icon: 'watch' },
+];
+
+const COLOR_OPTIONS = [
+  { value: 'black', bg: 'bg-black', border: 'border-slate-700' },
+  { value: 'white', bg: 'bg-white', border: 'border-slate-200' },
+  { value: 'navy', bg: 'bg-blue-900', border: '' },
+  { value: 'primary', bg: 'bg-[#13ec80]', border: '' },
+  { value: 'grey', bg: 'bg-stone-500', border: '' },
+];
+
+const CATEGORIES_FORM = ['Top', 'Bottom', 'Outerwear', 'Shoes', 'Accessory'];
+
+function AddItemModal({ onClose, onAdded }) {
+  const [form, setForm] = useState({ name: '', category: 'Top', image_url: '', color: '', formality: 'MODERATE', formality_value: 50 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name.trim()) { setError('Name is required'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      const payload = { name: form.name, category: form.category, image_url: form.image_url || null, color: form.color || null, formality: form.formality, formality_value: Number(form.formality_value) };
+      const item = await api.createClosetItem(payload);
+      onAdded(item);
+      onClose();
+    } catch (err) {
+      setError(err.body?.detail || err.message || 'Failed to add item');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 w-full max-w-md" onClick={e => e.stopPropagation()}>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Item</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Name *</label>
+            <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. Navy Blazer" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Category</label>
+            <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
+              {CATEGORIES_FORM.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Image URL</label>
+            <input type="url" value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} placeholder="https://..." className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Color</label>
+              <input type="text" value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. navy, black" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Formality</label>
+              <select value={form.formality} onChange={e => setForm({...form, formality: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
+                {['CASUAL', 'MODERATE', 'FORMAL', 'UNIVERSAL'].map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
+          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose} className="flex-1 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+            <button type="submit" disabled={loading} className="flex-1 bg-primary text-background-dark py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-60">{loading ? 'Adding…' : 'Add Item'}</button>
+          </div>
+        </form>
       </div>
-
-      {/* Main Navigation */}
-      <nav className="space-y-1 flex-1">
-        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-4 mt-2">Menu</div>
-        
-        <NavButton 
-          id="dashboard" icon={<LayoutGrid size={18} />} label="Today" 
-          active={activeTab === 'dashboard'} onClick={setActiveTab} 
-        />
-        <NavButton 
-          id="generator" icon={<Sparkles size={18} />} label="Generator" 
-          active={activeTab === 'generator'} onClick={setActiveTab} 
-        />
-        <NavButton 
-          id="wardrobe" icon={<Shirt size={18} />} label="Wardrobe" 
-          active={activeTab === 'wardrobe'} onClick={setActiveTab} 
-        />
-        
-        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-4 mt-8">Data</div>
-        
-        {/* NEW: Analytics Tab */}
-        <NavButton 
-          id="analytics" icon={<BarChart2 size={18} />} label="Insights" 
-          active={activeTab === 'analytics'} onClick={setActiveTab} 
-        />
-      </nav>
-
-      {/* Bottom Actions */}
-      <div className="border-t border-gray-100 pt-4 space-y-1">
-        <NavButton 
-          id="settings" icon={<Settings size={18} />} label="Settings" 
-          active={activeTab === 'settings'} onClick={setActiveTab} 
-        />
-        <button 
-          onClick={onLogout} 
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-        >
-          <LogOut size={18} /> 
-          Sign Out
-        </button>
-      </div>
-
-      {/* User Mini Profile */}
-      <div className="flex items-center gap-3 mt-6 px-2">
-        <div className="w-8 h-8 rounded-full bg-sage-100 flex items-center justify-center text-sage-700">
-          <User size={14} />
-        </div>
-        <div className="text-xs">
-          <p className="font-medium">Alex Doe</p>
-          <p className="text-gray-400">Free Plan</p>
-        </div>
-      </div>
-    </aside>
-
-    {/* --- MAIN CONTENT --- */}
-    <main className="flex-1 md:ml-64 p-6 md:p-10 mb-20 md:mb-0 max-w-7xl mx-auto w-full">
-      {children}
-    </main>
-
-    {/* --- MOBILE BOTTOM BAR --- */}
-    <div className="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 py-2 px-6 flex justify-between items-end z-50 pb-safe">
-       <MobileNavButton id="dashboard" icon={<LayoutGrid size={20} />} label="Today" active={activeTab === 'dashboard'} onClick={setActiveTab} />
-       <MobileNavButton id="wardrobe" icon={<Shirt size={20} />} label="Closet" active={activeTab === 'wardrobe'} onClick={setActiveTab} />
-       
-       {/* Featured Center Button */}
-       <div className="relative -top-5">
-         <button onClick={() => setActiveTab('generator')} className="w-14 h-14 bg-[#1F1F1F] rounded-full flex items-center justify-center text-white shadow-xl shadow-gray-300">
-           <Sparkles size={24} />
-         </button>
-       </div>
-
-       <MobileNavButton id="analytics" icon={<BarChart2 size={20} />} label="Stats" active={activeTab === 'analytics'} onClick={setActiveTab} />
-       <MobileNavButton id="settings" icon={<Settings size={20} />} label="Settings" active={activeTab === 'settings'} onClick={setActiveTab} />
     </div>
-  </div>
-);
+  );
+}
 
-// Helper Components
-const NavButton = ({ id, icon, label, active, onClick }) => (
-  <button 
-    onClick={() => onClick(id)}
-    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-      active ? 'bg-[#1F1F1F] text-white shadow-md' : 'text-gray-500 hover:bg-gray-100 hover:text-black'
-    }`}
-  >
-    <span className={active ? 'text-sage-200' : 'text-gray-400'}>{icon}</span>
-    {label}
-  </button>
-);
+const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) => {
+  const { category, setCategory, color, setColor, search, setSearch } = useClosetFilters();
+  const [suggestion, setSuggestion] = useState({ item_name: 'Navy Blazer', reason: 'Based on your calendar, try the Navy Blazer today.' });
+  const [showAddModal, setShowAddModal] = useState(false);
+  const navigate = useNavigate();
 
-const MobileNavButton = ({ id, icon, label, active, onClick }) => (
-  <button 
-    onClick={() => onClick(id)} 
-    className={`flex flex-col items-center gap-1 p-2 ${active ? 'text-black' : 'text-gray-400'}`}
-  >
-    {icon}
-    <span className="text-[10px] font-medium">{label}</span>
-  </button>
-);
+  useEffect(() => {
+    if (isApiConfigured()) {
+      api.getSuggestionsToday().then((data) => setSuggestion(data)).catch(() => {});
+    }
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display flex flex-col transition-colors">
+      {/* Top Navigation Bar - exact match to uploaded HTML */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 md:px-10 py-3">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-background-dark">
+                <span className="material-symbols-outlined font-bold">checkroom</span>
+              </div>
+              <h1 className="text-xl font-bold tracking-tight hidden md:block">Digital Closet</h1>
+            </div>
+            <div className="relative hidden lg:flex items-center">
+              <span className="material-symbols-outlined absolute left-3 text-slate-400">search</span>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search items, tags, or colors..."
+                className="bg-slate-100 dark:bg-slate-900 border-none rounded-lg pl-10 pr-4 py-2 w-80 text-sm focus:ring-2 focus:ring-primary/50 transition-all text-slate-900 dark:text-white placeholder-slate-500"
+              />
+            </div>
+          </div>
+          <nav className="hidden xl:flex items-center gap-8">
+            <button type="button" onClick={() => setActiveTab('dashboard')} className={`text-sm font-medium transition-colors ${activeTab === 'dashboard' ? 'text-primary font-semibold' : 'text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary'}`}>Dashboard</button>
+            <button type="button" onClick={() => setActiveTab('wardrobe')} className={`text-sm font-medium transition-colors ${activeTab === 'wardrobe' ? 'text-primary' : 'text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary'}`}>Outfits</button>
+            <button type="button" onClick={() => navigate('/app/dashboard')} className="text-slate-500 hover:text-primary transition-colors text-sm font-medium dark:text-slate-400">Calendar</button>
+            <button type="button" onClick={() => navigate('/app/analytics')} className="text-slate-500 hover:text-primary transition-colors text-sm font-medium dark:text-slate-400">Analytics</button>
+          </nav>
+          <div className="flex items-center gap-4">
+            <button type="button" onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label={darkMode ? 'Light mode' : 'Dark mode'}>
+              <span className="material-symbols-outlined">{darkMode ? 'light_mode' : 'dark_mode'}</span>
+            </button>
+            <button type="button" onClick={() => setShowAddModal(true)} className="bg-primary hover:bg-primary/90 text-background-dark px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-transform active:scale-95">
+              <span className="material-symbols-outlined text-[20px]">add</span>
+              <span>Add New Item</span>
+            </button>
+            <button type="button" onClick={onLogout} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="Logout">
+              <span className="material-symbols-outlined">logout</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex flex-1 max-w-[1440px] mx-auto w-full min-h-0">
+        {/* Sidebar - exact match to uploaded HTML */}
+        <aside className="w-64 border-r border-slate-200 dark:border-slate-800 p-6 hidden md:flex flex-col gap-8 sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto hide-scrollbar">
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Categories</h3>
+            <div className="flex flex-col gap-1">
+              {CATEGORIES.map(({ id, label, icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setCategory(id)}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg w-full text-left transition-colors ${category === id ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'}`}
+                >
+                  <span className="material-symbols-outlined text-[20px]">{icon}</span>
+                  <span className={category === id ? 'text-sm font-semibold' : 'text-sm font-medium'}>{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Color Palette</h3>
+            <div className="grid grid-cols-5 gap-3">
+              {COLOR_OPTIONS.map(({ value, bg, border }) => (
+                <label key={value} className={`size-8 rounded-full cursor-pointer ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark has-[:checked]:ring-2 ring-primary border ${border} ${bg}`}>
+                  <input type="radio" name="color" value={value} checked={color === value} onChange={() => setColor(value)} className="hidden" />
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Formality</h3>
+            <div className="px-2">
+              <div className="flex justify-between text-[10px] text-slate-500 font-bold mb-2 uppercase">
+                <span>Casual</span>
+                <span>Formal</span>
+              </div>
+              <input type="range" className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-primary" defaultValue={65} />
+            </div>
+          </div>
+          <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="bg-primary/5 rounded-xl p-4">
+              <p className="text-xs font-bold text-primary uppercase mb-1">AI Suggestion</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                {suggestion.reason || `Based on your calendar, try the ${suggestion.item_name || 'Navy Blazer'} today.`}
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6 md:p-10 overflow-x-hidden overflow-y-auto min-w-0">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Add Item Modal */}
+      {showAddModal && (
+        <AddItemModal
+          onClose={() => setShowAddModal(false)}
+          onAdded={() => setShowAddModal(false)}
+        />
+      )}
+
+      {/* Mobile Navigation Bar - exact match to uploaded HTML */}
+      <footer className="md:hidden fixed bottom-0 w-full bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 px-6 py-3 z-50">
+        <div className="flex justify-between items-center">
+          <button type="button" onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center gap-1 ${activeTab === 'dashboard' ? 'text-primary' : 'text-slate-400'}`}>
+            <span className="material-symbols-outlined">dashboard</span>
+            <span className="text-[10px] font-bold">Closet</span>
+          </button>
+          <button type="button" onClick={() => setActiveTab('wardrobe')} className={`flex flex-col items-center gap-1 ${activeTab === 'wardrobe' ? 'text-primary' : 'text-slate-400'}`}>
+            <span className="material-symbols-outlined">calendar_month</span>
+            <span className="text-[10px] font-bold">Plans</span>
+          </button>
+          <button type="button" onClick={() => setShowAddModal(true)} className="bg-primary text-background-dark size-12 rounded-full flex items-center justify-center -mt-8 border-4 border-white dark:border-background-dark shadow-lg">
+            <span className="material-symbols-outlined">add</span>
+          </button>
+          <button type="button" onClick={() => setActiveTab('generator')} className={`flex flex-col items-center gap-1 ${activeTab === 'generator' ? 'text-primary' : 'text-slate-400'}`}>
+            <span className="material-symbols-outlined">auto_awesome</span>
+            <span className="text-[10px] font-bold">AI</span>
+          </button>
+          <button type="button" className="flex flex-col items-center gap-1 text-slate-400">
+            <span className="material-symbols-outlined">settings</span>
+            <span className="text-[10px] font-bold">Settings</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  );
+};
 
 export default AppShell;
