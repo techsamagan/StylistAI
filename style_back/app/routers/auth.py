@@ -1,31 +1,40 @@
-from fastapi import APIRouter, HTTPException
+import bcrypt
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from app.schemas import UserCreate, UserLogin, Token
+from app.database import get_db
+from app.models import UserModel
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# In-memory user store for MVP (email -> {password, name, city})
-_users: dict[str, dict] = {}
+
+def _hash(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+
+def _verify(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed.encode())
 
 
 @router.post("/register", response_model=Token, status_code=201)
-def register(user: UserCreate):
-    if user.email in _users:
+def register(user: UserCreate, db: Session = Depends(get_db)):
+    if db.query(UserModel).filter(UserModel.email == user.email).first():
         raise HTTPException(status_code=400, detail="User already exists")
-    _users[user.email] = {
-        "email": user.email,
-        "password": user.password,
-        "name": user.name,
-        "city": user.city,
-    }
-    token = f"token-{user.email}"
-    return Token(access_token=token, city=user.city, name=user.name)
+    db_user = UserModel(
+        email=user.email,
+        password_hash=_hash(user.password),
+        name=user.name,
+        city=user.city,
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return Token(access_token=f"token-{user.email}", city=user.city, name=user.name)
 
 
 @router.post("/login", response_model=Token)
-def login(credentials: UserLogin):
-    stored = _users.get(credentials.email)
-    if not stored or stored["password"] != credentials.password:
+def login(credentials: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(UserModel).filter(UserModel.email == credentials.email).first()
+    if not user or not _verify(credentials.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid email or password")
-    token = f"token-{credentials.email}"
-    return Token(access_token=token, city=stored.get("city"), name=stored.get("name"))
-
+    return Token(access_token=f"token-{user.email}", city=user.city, name=user.name)

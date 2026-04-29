@@ -1,0 +1,51 @@
+from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy.sql import func
+from app.database import Base
+
+
+class UserModel(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=True)
+    city = Column(String(255), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class ClosetItemModel(Base):
+    __tablename__ = "closet_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    name = Column(String(255), nullable=False)
+    category = Column(String(50), nullable=False)
+    image_url = Column(Text, nullable=True)
+    color = Column(String(50), nullable=True)
+    formality = Column(String(50), nullable=True)
+    formality_value = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class CalendarEventModel(Base):
+    __tablename__ = "calendar_events"
+
+    id = Column(String(36), primary_key=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    title = Column(String(255), nullable=False)
+    start = Column(String(30), nullable=False)
+    end_time = Column(String(30), nullable=False)
+    formality = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class SavedOutfitModel(Base):
+    __tablename__ = "saved_outfits"
+
+    id = Column(String(36), primary_key=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    context = Column(String(100), nullable=False)
+    items_json = Column(Text, nullable=False)
+    explanation = Column(Text, nullable=False)
+    saved_at = Column(DateTime(timezone=True), server_default=func.now())

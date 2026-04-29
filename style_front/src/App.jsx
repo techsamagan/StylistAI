@@ -22,7 +22,9 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
 const DARK_KEY = 'style-dark-mode';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try { return Boolean(localStorage.getItem('auth_token')); } catch { return false; }
+  });
   const [activeTab, setActiveTab] = useState('wardrobe');
   const [darkMode, setDarkMode] = useState(() => {
     try { return localStorage.getItem(DARK_KEY) === '1'; } catch { return false; }
@@ -49,6 +51,7 @@ const App = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    try { localStorage.removeItem('auth_token'); localStorage.removeItem('user_city'); localStorage.removeItem('user_name'); } catch {}
     navigate('/');
   };
 

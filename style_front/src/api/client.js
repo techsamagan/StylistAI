@@ -89,23 +89,66 @@ export const api = {
     });
   },
 
+  uploadClosetItem(formData) {
+    const url = `${BASE}/closet/upload`;
+    const token = getAuthToken();
+    return fetch(url, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = new Error(res.statusText);
+        err.status = res.status;
+        try { err.body = await res.json(); } catch { err.body = await res.text(); }
+        throw err;
+      }
+      return res.json();
+    });
+  },
+
+  updateClosetItem(id, data) {
+    return request(`/closet/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
   deleteClosetItem(id) {
     return request(`/closet/${id}`, { method: 'DELETE' });
   },
 
-  generateOutfit({ context, weather_temp_c, formality_preference }) {
+  getTodayOutfit(refresh = false) {
+    return request(`/outfits/today${refresh ? '?refresh=true' : ''}`);
+  },
+
+  generateOutfit({ context, weather_temp_c, formality_preference, vibe }) {
     return request('/outfits/generate', {
       method: 'POST',
       body: JSON.stringify({
         context: context || 'Office',
         weather_temp_c: weather_temp_c ?? null,
         formality_preference: formality_preference ?? null,
+        vibe: vibe ?? 50,
       }),
     });
   },
 
+  saveOutfit({ context, items, explanation }) {
+    return request('/outfits/save', {
+      method: 'POST',
+      body: JSON.stringify({ context, items, explanation }),
+    });
+  },
+
+  getSavedOutfits() {
+    return request('/outfits/saved');
+  },
+
   getSuggestionsToday() {
-    return request('/suggestions/today');
+    const city = typeof window !== 'undefined' ? localStorage.getItem('user_city') : null;
+    const q = city ? `?city=${encodeURIComponent(city)}` : '';
+    return request(`/suggestions/today${q}`);
   },
 
   getCalendarEvents(date = null) {

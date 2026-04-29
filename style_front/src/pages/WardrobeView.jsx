@@ -1,209 +1,378 @@
 import React, { useState, useEffect } from 'react';
-import { DASHBOARD_WARDROBE } from '../data/mockData';
 import { api, isApiConfigured } from '../api/client';
 import { useClosetFilters } from '../context/ClosetFilterContext';
+import ItemModal from '../components/ItemModal';
+import Toast from '../components/Toast';
 
-const CATEGORY_ICON = {
-  Top: 'dry_cleaning',
-  Bottom: 'styler',
-  Outerwear: 'checkroom',
-  Shoes: 'steps',
-  Accessory: 'watch',
+const CATEGORIES = [
+  { id: 'all',       label: 'All',        icon: 'apparel'     },
+  { id: 'Top',       label: 'Tops',       icon: 'dry_cleaning' },
+  { id: 'Bottom',    label: 'Bottoms',    icon: 'styler'      },
+  { id: 'Outerwear', label: 'Outerwear',  icon: 'checkroom'   },
+  { id: 'Shoes',     label: 'Shoes',      icon: 'steps'       },
+  { id: 'Accessory', label: 'Accessories',icon: 'watch'       },
+];
+
+const FORMALITY_COLORS = {
+  FORMAL:    'text-violet-400 bg-violet-400/10',
+  MODERATE:  'text-primary bg-primary/10',
+  CASUAL:    'text-sky-400 bg-sky-400/10',
+  UNIVERSAL: 'text-amber-400 bg-amber-400/10',
 };
 
 function normalizeItem(item) {
   const tag = item.category?.value ?? item.category ?? item.tag ?? 'Top';
-  const color = item.color;
   return {
-    id: item.id,
-    name: item.name,
-    image: item.image_url ?? item.image,
+    id:          item.id,
+    name:        item.name,
+    image:       item.image_url ?? item.image,
     tag,
-    formality: item.formality ?? 'MODERATE',
+    formality:   item.formality ?? 'MODERATE',
     formalityValue: item.formality_value ?? item.formalityValue ?? 50,
-    colorDots: item.colorDots ?? item.colors ?? (color ? [color] : ['slate']),
-    noEdit: item.noEdit ?? false,
+    color:       item.color ?? null,
   };
 }
 
-function ColorDot({ color }) {
-  const map = {
-    white: 'bg-white border-slate-200',
-    slate: 'bg-slate-300 dark:bg-slate-500',
-    blue: 'bg-blue-900',
-    navy: 'bg-blue-900',
-    green: 'bg-green-800',
-    amber: 'bg-amber-900',
-    black: 'bg-black',
-    grey: 'bg-stone-500',
-    primary: 'bg-primary',
-  };
-  return <div className={`size-3 rounded-full border border-slate-200 dark:border-slate-600 ${map[color] || 'bg-slate-300'}`} />;
-}
+/* ── Skeleton card ────────────────────────── */
+const SkeletonCard = () => (
+  <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden">
+    <div className="aspect-[4/5] skeleton" />
+    <div className="p-4 space-y-2">
+      <div className="skeleton h-3 w-2/3 rounded" />
+      <div className="skeleton h-2.5 w-1/3 rounded" />
+    </div>
+  </div>
+);
 
+/* ── Grid item card ───────────────────────── */
+const GridCard = ({ item, onEdit, onDelete, onWear }) => (
+  <div className="group relative flex flex-col bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+    <div className="relative aspect-[4/5] bg-[#0d1a12] flex items-center justify-center p-5">
+      {item.image ? (
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
+        />
+      ) : (
+        <span className="material-symbols-outlined text-[48px] text-[#1e2f22]">checkroom</span>
+      )}
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => onWear(item)}
+          className="bg-primary text-[#0d1a12] font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          Wear
+        </button>
+        <button
+          type="button"
+          onClick={() => onEdit(item)}
+          className="bg-white/10 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors backdrop-blur-sm"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          onClick={() => onDelete(item)}
+          className="bg-red-500/20 text-red-400 text-xs px-2.5 py-1.5 rounded-lg hover:bg-red-500/30 transition-colors"
+        >
+          <span className="material-symbols-outlined text-[14px]">delete</span>
+        </button>
+      </div>
+
+      {/* Category badge */}
+      <div className="absolute top-3 left-3 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-md">
+        <span className="text-[9px] font-bold text-white uppercase tracking-wide">{item.tag}</span>
+      </div>
+    </div>
+
+    <div className="p-3.5">
+      <h3 className="font-bold text-sm text-white truncate mb-1.5">{item.name}</h3>
+      <div className="flex items-center justify-between">
+        {item.formality && (
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${FORMALITY_COLORS[item.formality] || 'text-slate-400 bg-slate-800'}`}>
+            {item.formality}
+          </span>
+        )}
+        {item.color && (
+          <span className="text-[9px] text-slate-500 capitalize">{item.color}</span>
+        )}
+      </div>
+      {item.formalityValue !== undefined && (
+        <div className="mt-2.5 h-0.5 w-full bg-[#1e2f22] rounded-full overflow-hidden">
+          <div className="h-full bg-primary/60 rounded-full" style={{ width: `${item.formalityValue}%` }} />
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+/* ── List item row ────────────────────────── */
+const ListRow = ({ item, onEdit, onDelete, onWear }) => (
+  <div className="group flex items-center gap-4 bg-[#121f17] border border-[#1e2f22] rounded-xl p-3 hover:border-primary/20 hover:bg-[#162118] transition-all duration-200">
+    <div className="size-14 flex-shrink-0 bg-[#0d1a12] rounded-lg overflow-hidden flex items-center justify-center border border-[#1e2f22]">
+      {item.image
+        ? <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
+        : <span className="material-symbols-outlined text-[22px] text-[#1e2f22]">checkroom</span>
+      }
+    </div>
+
+    <div className="flex-1 min-w-0">
+      <div className="flex items-center gap-2 mb-0.5">
+        <h3 className="font-bold text-sm text-white truncate">{item.name}</h3>
+        {item.formality && (
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase flex-shrink-0 ${FORMALITY_COLORS[item.formality] || 'text-slate-400 bg-slate-800'}`}>
+            {item.formality}
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] text-slate-600 uppercase tracking-wide">{item.tag}</span>
+        {item.color && <span className="text-[10px] text-slate-600">· {item.color}</span>}
+      </div>
+    </div>
+
+    <div className="w-20 h-1 bg-[#1e2f22] rounded-full overflow-hidden flex-shrink-0 hidden sm:block">
+      <div className="h-full bg-primary/50 rounded-full" style={{ width: `${item.formalityValue ?? 50}%` }} />
+    </div>
+
+    <div className="flex-shrink-0 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button type="button" onClick={() => onWear(item)} className="bg-primary/10 text-primary px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-primary/20 transition-colors">
+        Wear
+      </button>
+      <button type="button" onClick={() => onEdit(item)} className="bg-white/5 text-slate-300 px-2.5 py-1 rounded-lg text-xs hover:bg-white/10 transition-colors">
+        Edit
+      </button>
+      <button type="button" onClick={() => onDelete(item)} className="bg-red-500/10 text-red-400 p-1 rounded-lg hover:bg-red-500/20 transition-colors">
+        <span className="material-symbols-outlined text-[13px]">delete</span>
+      </button>
+    </div>
+  </div>
+);
+
+/* ── Main View ────────────────────────────── */
 const WardrobeView = () => {
-  const { filters } = useClosetFilters();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid');
+  const { refreshKey, triggerRefresh } = useClosetFilters();
+  const [items,      setItems]      = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [viewMode,   setViewMode]   = useState('grid');
+  const [category,   setCategory]   = useState('all');
+  const [search,     setSearch]     = useState('');
+  const [editItem,   setEditItem]   = useState(null);
+  const [showAdd,    setShowAdd]    = useState(false);
+  const [toast,      setToast]      = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     if (isApiConfigured()) {
-      api.getCloset(filters)
-        .then((data) => { if (!cancelled) setItems(data.map(normalizeItem)); })
-        .catch(() => { if (!cancelled) setItems(DASHBOARD_WARDROBE.map(normalizeItem)); })
+      const params = {};
+      if (category !== 'all') params.category = category;
+      if (search.trim()) params.search = search.trim();
+      api.getCloset(params)
+        .then(data => { if (!cancelled) setItems(data.map(normalizeItem)); })
+        .catch(() => { if (!cancelled) setItems([]); })
         .finally(() => { if (!cancelled) setLoading(false); });
     } else {
-      let list = DASHBOARD_WARDROBE;
-      if (filters.category) list = list.filter((i) => i.tag === filters.category);
-      if (filters.color) list = list.filter((i) => (i.colorDots || []).includes(filters.color) || (Array.isArray(i.colorDots) && i.colorDots[0] === filters.color));
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        list = list.filter((i) => i.name.toLowerCase().includes(q) || (i.tag && i.tag.toLowerCase().includes(q)));
-      }
-      setItems(list.map(normalizeItem));
+      setItems([]);
       setLoading(false);
     }
     return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.category, filters.color, filters.formality, filters.search]);
+  }, [category, search, refreshKey]);
 
-  const isFormalityHighlight = (label) => ['MODERATE', 'FORMAL', 'UNIVERSAL'].includes(label);
-  const displayCount = items.length;
+  const handleDelete = async (item) => {
+    if (!isApiConfigured()) return;
+    try {
+      await api.deleteClosetItem(item.id);
+      setItems(prev => prev.filter(i => i.id !== item.id));
+      setToast(`${item.name} removed.`);
+    } catch {
+      setToast('Failed to delete item.');
+    }
+  };
 
+  const handleWear = (item) => setToast(`${item.name} marked as worn today!`);
+
+  /* ── Render ───────────────────────────── */
   return (
-    <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-8">
+    <div className="animate-fade-up">
+
+      {/* ── Top header ──────────────────── */}
+      <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">My Closet</h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">Showing {displayCount} items in your collection.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">My Closet</h1>
+          <p className="text-slate-500 text-sm mt-0.5">
+            {loading ? 'Loading…' : `${items.length} item${items.length !== 1 ? 's' : ''}`}
+          </p>
         </div>
-        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
-          <button
-            type="button"
-            onClick={() => setViewMode('grid')}
-            className={`p-1.5 rounded-md ${viewMode === 'grid' ? 'bg-white dark:bg-slate-800 shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors'}`}
-            aria-label="Grid view"
-          >
-            <span className="material-symbols-outlined text-[20px]">grid_view</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('list')}
-            className={`p-1.5 rounded-md ${viewMode === 'list' ? 'bg-white dark:bg-slate-800 shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors'}`}
-            aria-label="List view"
-          >
-            <span className="material-symbols-outlined text-[20px]">view_list</span>
-          </button>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Search */}
+          <div className="relative hidden sm:flex items-center">
+            <span className="material-symbols-outlined absolute left-2.5 text-slate-600 text-[16px]">search</span>
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search…"
+              className="bg-[#121f17] border border-[#1e2f22] rounded-xl py-2 pl-8 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40 w-44 transition-all focus:w-52"
+            />
+          </div>
+
+          {/* View toggle */}
+          <div className="flex items-center bg-[#121f17] border border-[#1e2f22] rounded-xl p-0.5">
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+            >
+              <span className="material-symbols-outlined text-[18px]">grid_view</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+            >
+              <span className="material-symbols-outlined text-[18px]">view_list</span>
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* ── Category pills ──────────────── */}
+      <div className="flex items-center gap-2 mb-5 overflow-x-auto hide-scrollbar pb-1">
+        {CATEGORIES.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setCategory(id)}
+            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-150 ${
+              category === id
+                ? 'bg-primary text-[#0d1a12] shadow-lg shadow-primary/20'
+                : 'bg-[#121f17] border border-[#1e2f22] text-slate-400 hover:text-white hover:border-[#2a4032]'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Mobile search ───────────────── */}
+      <div className="relative flex items-center sm:hidden mb-4">
+        <span className="material-symbols-outlined absolute left-3 text-slate-600 text-[16px]">search</span>
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search items…"
+          className="w-full bg-[#121f17] border border-[#1e2f22] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40"
+        />
+      </div>
+
+      {/* ── Content ─────────────────────── */}
       {loading ? (
-        <p className="text-slate-500 dark:text-slate-400">Loading…</p>
-      ) : viewMode === 'list' ? (
-        <div className="flex flex-col gap-3">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="group flex items-center gap-5 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300 p-4 hover:shadow-lg"
-            >
-              <div className="relative size-16 flex-shrink-0 bg-slate-50 dark:bg-[#1a2e24] rounded-xl overflow-hidden flex items-center justify-center">
-                <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="material-symbols-outlined text-[16px] text-primary">{CATEGORY_ICON[item.tag] || 'dry_cleaning'}</span>
-                  <h3 className="font-bold text-slate-900 dark:text-white truncate">{item.name}</h3>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${isFormalityHighlight(item.formality) ? 'text-primary bg-primary/10' : 'text-slate-400 bg-slate-100 dark:bg-slate-800'}`}>{item.formality}</span>
-                  <div className="flex gap-1">{(item.colorDots || []).map((c, i) => <ColorDot key={i} color={c} />)}</div>
-                </div>
-              </div>
-              <div className="flex-shrink-0 w-28 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-primary" style={{ width: `${item.formalityValue ?? 50}%` }} />
-              </div>
-              <button type="button" className="flex-shrink-0 opacity-0 group-hover:opacity-100 bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:bg-primary/20">Wear</button>
-            </div>
-          ))}
-          <div className="group flex items-center gap-5 bg-slate-100 dark:bg-slate-900/20 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-primary transition-all duration-300 p-4 cursor-pointer">
-            <div className="size-16 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-[24px] text-slate-400 group-hover:text-primary">upload</span>
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Upload Item</h3>
-              <p className="text-sm text-slate-400">Drop your image here or click to browse</p>
-            </div>
+        viewMode === 'grid' ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
           </div>
+        ) : (
+          <div className="space-y-2">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="skeleton h-20 rounded-xl" />
+            ))}
+          </div>
+        )
+      ) : items.length === 0 ? (
+        /* ── Empty state ─────────────────── */
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="size-20 rounded-full bg-[#121f17] border border-[#1e2f22] flex items-center justify-center mb-5">
+            <span className="material-symbols-outlined text-[36px] text-slate-600">checkroom</span>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">
+            {search || category !== 'all' ? 'No items found' : 'Your closet is empty'}
+          </h3>
+          <p className="text-slate-500 text-sm mb-6 max-w-xs">
+            {search || category !== 'all'
+              ? 'Try a different search or category.'
+              : 'Upload photos of your clothes to get started. The AI will suggest outfits once you have items.'}
+          </p>
+          {!search && category === 'all' && (
+            <button
+              type="button"
+              onClick={() => setShowAdd(true)}
+              className="flex items-center gap-2 bg-primary text-[#0d1a12] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all active:scale-[.98] shadow-lg shadow-primary/20"
+            >
+              <span className="material-symbols-outlined text-[18px]">upload</span>
+              Upload your first item
+            </button>
+          )}
+        </div>
+      ) : viewMode === 'grid' ? (
+        /* ── Grid ───────────────────────── */
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {items.map(item => (
+            <GridCard
+              key={item.id}
+              item={item}
+              onEdit={setEditItem}
+              onDelete={handleDelete}
+              onWear={handleWear}
+            />
+          ))}
+          {/* Add card */}
+          <button
+            type="button"
+            onClick={() => setShowAdd(true)}
+            className="group flex flex-col items-center justify-center min-h-[200px] bg-[#121f17] border-2 border-dashed border-[#1e2f22] rounded-2xl hover:border-primary/30 hover:bg-[#162118] transition-all cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[32px] text-slate-700 group-hover:text-primary transition-colors mb-2">add_circle</span>
+            <span className="text-xs font-bold text-slate-600 group-hover:text-slate-400 transition-colors">Add Item</span>
+          </button>
         </div>
       ) : (
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8`}>
-          {items.map((item) => (
-            <div
+        /* ── List ───────────────────────── */
+        <div className="space-y-2">
+          {items.map(item => (
+            <ListRow
               key={item.id}
-              className="group flex flex-col bg-white dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5"
-            >
-              <div className="relative aspect-[4/5] bg-slate-50 dark:bg-[#1a2e24] flex items-center justify-center p-8">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4 size-8 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
-                  <span className="material-symbols-outlined text-[18px] text-primary">{CATEGORY_ICON[item.tag] || 'dry_cleaning'}</span>
-                </div>
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <button type="button" className="bg-white text-slate-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-primary transition-colors">Wear Today</button>
-                  {!item.noEdit && (
-                    <button type="button" className="bg-slate-800 text-white p-2 rounded-lg hover:bg-slate-700 transition-colors">
-                      <span className="material-symbols-outlined text-[20px]">edit</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="p-5">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white">{item.name}</h3>
-                  <div className="flex gap-1">
-                    {(item.colorDots || []).map((c, i) => (
-                      <ColorDot key={i} color={c} />
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-tighter dark:text-slate-400">Formality</span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        isFormalityHighlight(item.formality)
-                          ? 'text-primary bg-primary/10'
-                          : 'text-slate-400 bg-slate-100 dark:bg-slate-800'
-                      }`}
-                    >
-                      {item.formality}
-                    </span>
-                  </div>
-                  <div className="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${item.formalityValue ?? 50}%` }} />
-                  </div>
-                </div>
-              </div>
-            </div>
+              item={item}
+              onEdit={setEditItem}
+              onDelete={handleDelete}
+              onWear={handleWear}
+            />
           ))}
-          {/* Upload Item */}
-          <div className="group flex flex-col bg-slate-100 dark:bg-slate-900/20 rounded-2xl overflow-hidden border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-primary transition-all duration-300 items-center justify-center min-h-[350px] cursor-pointer">
-            <div className="flex flex-col items-center text-slate-400 group-hover:text-primary transition-colors text-center p-6">
-              <div className="size-16 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-[32px]">upload</span>
-              </div>
-              <h3 className="font-bold text-lg text-slate-600 dark:text-slate-300">Upload Item</h3>
-              <p className="text-sm mt-1 max-w-[150px]">Drop your image here or click to browse</p>
+          <button
+            type="button"
+            onClick={() => setShowAdd(true)}
+            className="group w-full flex items-center gap-4 bg-[#121f17] border-2 border-dashed border-[#1e2f22] rounded-xl p-3 hover:border-primary/30 transition-all cursor-pointer"
+          >
+            <div className="size-14 flex-shrink-0 bg-[#0d1a12] rounded-lg flex items-center justify-center border border-[#1e2f22] group-hover:border-primary/20">
+              <span className="material-symbols-outlined text-[22px] text-slate-600 group-hover:text-primary transition-colors">add</span>
             </div>
-          </div>
+            <span className="text-sm font-medium text-slate-600 group-hover:text-slate-400 transition-colors">Add new item to closet</span>
+          </button>
         </div>
       )}
+
+      {/* ── Modals ──────────────────────── */}
+      {editItem && (
+        <ItemModal
+          item={editItem}
+          onClose={() => setEditItem(null)}
+          onSaved={() => { setEditItem(null); triggerRefresh(); setToast('Item updated!'); }}
+        />
+      )}
+      {showAdd && (
+        <ItemModal
+          item={null}
+          onClose={() => setShowAdd(false)}
+          onSaved={() => { setShowAdd(false); triggerRefresh(); setToast('Item added to your closet!'); }}
+        />
+      )}
+      {toast && <Toast message={toast} onDone={() => setToast(null)} />}
     </div>
   );
 };

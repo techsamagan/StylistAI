@@ -1,7 +1,16 @@
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
+from app.database import engine
+from app.models import Base
 from app.routers import health, closet, outfits, auth, suggestions, calendar, weather
+
+Base.metadata.create_all(bind=engine)
+
+UPLOADS_DIR = Path(__file__).parent / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
 
 app = FastAPI(
     title="Style API",
@@ -24,6 +33,8 @@ app.include_router(auth.router)
 app.include_router(suggestions.router)
 app.include_router(calendar.router)
 app.include_router(weather.router)
+
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
 
 @app.get("/")

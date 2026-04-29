@@ -7,6 +7,9 @@ export function ClosetFilterProvider({ children }) {
   const [color, setColor] = useState(null);
   const [formality, setFormality] = useState(null);
   const [search, setSearch] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const triggerRefresh = () => setRefreshKey((k) => k + 1);
 
   const filters = {
     category: category === 'all' ? null : category,
@@ -27,6 +30,8 @@ export function ClosetFilterProvider({ children }) {
         search,
         setSearch,
         filters,
+        refreshKey,
+        triggerRefresh,
       }}
     >
       {children}
@@ -36,6 +41,6 @@ export function ClosetFilterProvider({ children }) {
 
 export function useClosetFilters() {
   const ctx = useContext(ClosetFilterContext);
-  if (!ctx) return { filters: {}, setCategory: () => {}, setColor: () => {}, setFormality: () => {}, setSearch: () => {} };
+  if (!ctx) return { filters: {}, setCategory: () => {}, setColor: () => {}, setFormality: () => {}, setSearch: () => {}, refreshKey: 0, triggerRefresh: () => {} };
   return ctx;
 }
