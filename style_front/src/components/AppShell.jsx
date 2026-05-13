@@ -8,17 +8,38 @@ const NAV = [
   { id: 'dashboard', label: 'Dashboard', icon: 'home'          },
   { id: 'wardrobe',  label: 'My Closet',  icon: 'checkroom'     },
   { id: 'generator', label: 'Style AI',   icon: 'auto_awesome'  },
+  { id: 'travel',    label: 'Travel',     icon: 'flight_takeoff'},
+  { id: 'shopping',  label: 'Shop',       icon: 'shopping_bag'  },
 ];
+
+const BASE = process.env.REACT_APP_API_URL || '';
+
+function resolveAvatar(url) {
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  return `${BASE}${url}`;
+}
 
 const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) => {
   const { triggerRefresh } = useClosetFilters();
   const [showAddModal, setShowAddModal] = useState(false);
   const [suggestion, setSuggestion] = useState(null);
   const userName = (() => { try { return localStorage.getItem('user_name') || ''; } catch { return ''; } })();
+  const [avatarUrl, setAvatarUrl] = useState(() => {
+    try { return resolveAvatar(localStorage.getItem('user_avatar')); } catch { return null; }
+  });
 
   useEffect(() => {
     if (isApiConfigured()) {
       api.getSuggestionsToday().then(setSuggestion).catch(() => {});
+      // Keep avatar in sync with profile
+      api.getProfile().then(res => {
+        if (res?.avatar_url) {
+          const resolved = resolveAvatar(res.avatar_url);
+          setAvatarUrl(resolved);
+          try { localStorage.setItem('user_avatar', res.avatar_url); } catch {}
+        }
+      }).catch(() => {});
     }
   }, []);
 
@@ -81,30 +102,39 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
           </div>
         )}
 
-        {/* Footer */}
-        <div className="p-3 border-t border-[#1e2f22] space-y-0.5">
-          <div className="px-3 py-2 flex items-center gap-2">
-            <div className="size-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary flex-shrink-0">
-              {userName ? userName[0].toUpperCase() : 'U'}
+        {/* Profile / Footer */}
+        <div className="p-4 border-t border-[#1e2f22]">
+          <button 
+            type="button"
+            onClick={() => setActiveTab('profile')}
+            className={`w-full px-3 py-2 flex items-center justify-between rounded-xl transition-all ${
+              activeTab === 'profile' ? 'bg-primary/10 border border-primary/20' : 'hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className="size-8 rounded-full flex-shrink-0 overflow-hidden border-2 border-[#1e2f22] bg-primary/20">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={userName || 'Profile'}
+                    className="w-full h-full object-cover"
+                    onError={() => setAvatarUrl(null)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[11px] font-bold text-primary">
+                    {userName ? userName[0].toUpperCase() : 'U'}
+                  </div>
+                )}
+              </div>
+              <div className="overflow-hidden">
+                <p className={`text-xs font-semibold truncate leading-none ${activeTab === 'profile' ? 'text-primary' : 'text-white'}`}>
+                  {userName || 'My Account'}
+                </p>
+                <p className="text-[10px] text-slate-500 mt-0.5 truncate">View profile</p>
+              </div>
             </div>
-            <span className="text-xs font-medium text-slate-400 truncate">{userName || 'My Account'}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setDarkMode && setDarkMode(!darkMode)}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all"
-          >
-            <span className="material-symbols-outlined text-[16px]">{darkMode ? 'light_mode' : 'dark_mode'}</span>
-            {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-all"
-          >
-            <span className="material-symbols-outlined text-[16px]">logout</span>
-            Sign Out
-          </button>
+          
         </div>
       </aside>
 
@@ -127,8 +157,12 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
             >
               <span className="material-symbols-outlined text-[14px]">add</span> Add
             </button>
-            <button type="button" onClick={onLogout} className="p-1.5 text-slate-500 hover:text-white">
-              <span className="material-symbols-outlined text-[20px]">logout</span>
+            <button type="button" onClick={() => setActiveTab('profile')} className="p-0.5 rounded-full border border-[#1e2f22] overflow-hidden size-8 flex-shrink-0">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover rounded-full" onError={() => setAvatarUrl(null)} />
+              ) : (
+                <span className="material-symbols-outlined text-[20px] text-slate-500 w-full h-full flex items-center justify-center">account_circle</span>
+              )}
             </button>
           </div>
         </header>
@@ -141,7 +175,7 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
 
       {/* ── Mobile bottom nav ───────────────────────── */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0d1a12]/95 backdrop-blur-xl border-t border-[#1e2f22]">
-        <div className="flex items-center justify-around px-2 py-2">
+        <div className="flex items-center justify-around px-1 py-2">
           {NAV.map(({ id, label, icon }) => {
             const active = activeTab === id;
             return (
@@ -149,22 +183,22 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
                 key={id}
                 type="button"
                 onClick={() => setActiveTab(id)}
-                className={`flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-xl transition-colors ${
+                className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl transition-colors ${
                   active ? 'text-primary' : 'text-slate-600'
                 }`}
               >
                 <span className={`material-symbols-outlined text-[22px] ${active ? 'icon-filled' : ''}`}>{icon}</span>
-                <span className="text-[9px] font-bold uppercase tracking-wide">{label}</span>
+                <span className="text-[9px] font-bold uppercase tracking-wide truncate w-full text-center">{label}</span>
               </button>
             );
           })}
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-xl text-slate-600"
+            className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-slate-600"
           >
             <span className="material-symbols-outlined text-[22px]">add_circle</span>
-            <span className="text-[9px] font-bold uppercase tracking-wide">Add</span>
+            <span className="text-[9px] font-bold uppercase tracking-wide truncate w-full text-center">Add</span>
           </button>
         </div>
       </nav>

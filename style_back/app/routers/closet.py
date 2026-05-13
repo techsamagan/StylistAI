@@ -111,10 +111,21 @@ async def upload_item(
 ):
     image_url = None
     if file and file.filename:
-        ext = Path(file.filename).suffix.lower() or ".jpg"
-        filename = f"{uuid.uuid4()}{ext}"
-        dest = UPLOADS_DIR / filename
-        dest.write_bytes(await file.read())
+        raw_bytes = await file.read()
+        filename = ""
+        try:
+            from rembg import remove
+            output_bytes = remove(raw_bytes)
+            ext = ".png"
+            filename = f"{uuid.uuid4()}{ext}"
+            dest = UPLOADS_DIR / filename
+            dest.write_bytes(output_bytes)
+        except Exception:
+            ext = Path(file.filename).suffix.lower() or ".jpg"
+            filename = f"{uuid.uuid4()}{ext}"
+            dest = UPLOADS_DIR / filename
+            dest.write_bytes(raw_bytes)
+            
         base = str(request.base_url).rstrip("/")
         image_url = f"{base}/uploads/{filename}"
 

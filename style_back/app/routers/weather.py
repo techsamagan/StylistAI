@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import urllib.request
+import urllib.parse
 import json
 
 router = APIRouter(prefix="/weather", tags=["weather"])
@@ -9,6 +10,48 @@ def _fetch_json(url: str) -> dict:
     """Simple HTTP GET using stdlib – no extra dependencies needed."""
     with urllib.request.urlopen(url, timeout=5) as resp:
         return json.loads(resp.read())
+
+
+def _get_weather(city: str):
+    """
+    Geocode a city name and fetch current weather.
+    Returns dict {temp_c, code, city} or None on any error.
+    Imported by travel.py and outfits.py.
+    """
+    try:
+        geo = _fetch_json(
+            f"https://geocoding-api.open-meteo.com/v1/search"
+            f"?name={urllib.parse.quote(city)}&count=1&language=en&format=json"
+        )
+        results = geo.get("results") or []
+        if not results:
+            return None
+        r = results[0]
+        wx = _fetch_json(
+            f"https://api.open-meteo.com/v1/forecast"
+            f"?latitude={r['latitude']}&longitude={r['longitude']}"
+            f"&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto"
+        )
+        current = wx.get("current", {})
+        return {
+            "temp_c": current.get("temperature_2m"),
+            "code": current.get("weathercode", 0),
+            "city": r.get("name", city),
+        }
+    except Exception:
+        return None
+
+
+def _fetch_weather_by_coords(lat: float, lon: float) -> dict:
+    """Internal: fetch raw weather JSON by coordinates."""
+    wx_url = (
+        f"https://api.open-meteo.com/v1/forecast"
+        f"?latitude={lat}&longitude={lon}"
+        f"&current=temperature_2m,weathercode"
+        f"&temperature_unit=celsius"
+        f"&timezone=auto"
+    )
+    return _fetch_json(wx_url)
 
 
 WMO_CODE_MAP = {
@@ -67,15 +110,8 @@ def get_current_weather(city: str | None = None, lat: float | None = None, lon: 
         city_name = city or f"{lat:.2f}, {lon:.2f}"
 
     # Weather API
-    wx_url = (
-        f"https://api.open-meteo.com/v1/forecast"
-        f"?latitude={lat}&longitude={lon}"
-        f"&current=temperature_2m,weathercode"
-        f"&temperature_unit=celsius"
-        f"&timezone=auto"
-    )
     try:
-        wx = _fetch_json(wx_url)
+        wx = _fetch_weather_by_coords(lat, lon)
     except Exception:
         raise HTTPException(status_code=503, detail="Weather service unavailable")
 
@@ -92,7 +128,3 @@ def get_current_weather(city: str | None = None, lat: float | None = None, lon: 
         "lat": lat,
         "lon": lon,
     }
-
-
-# urllib.parse is used above – import it
-import urllib.parse  # noqa: E402

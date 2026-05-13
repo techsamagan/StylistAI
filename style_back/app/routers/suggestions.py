@@ -110,3 +110,42 @@ def get_today_suggestion(
         reason = f"The {pick.name} is a solid all-round choice for today."
 
     return AISuggestionResponse(item_name=pick.name, reason=reason)
+
+
+@router.get("/gaps")
+def get_wardrobe_gaps(
+    db: Session = Depends(get_db),
+    user_id: Optional[int] = Depends(get_current_user_id),
+):
+    q = db.query(ClosetItemModel)
+    if user_id:
+        q = q.filter(ClosetItemModel.user_id == user_id)
+    items = q.all()
+
+    if len(items) < 5:
+        return {"suggestion": "Keep building your closet!", "reason": "Upload more items to get personalized shopping suggestions and gap analysis."}
+
+    cats = {"Top": 0, "Bottom": 0, "Outerwear": 0, "Shoes": 0}
+    formalities = {"FORMAL": 0, "CASUAL": 0, "MODERATE": 0}
+
+    for i in items:
+        if i.category in cats: cats[i.category] += 1
+        if i.formality in formalities: formalities[i.formality] += 1
+
+    if cats["Bottom"] == 0:
+        return {"suggestion": "Pants / Jeans", "reason": f"You have {cats['Top']} tops but no bottoms! Adding a versatile pair of dark jeans or chinos will unlock many outfits."}
+    if cats["Outerwear"] == 0:
+        return {"suggestion": "A versatile jacket", "reason": "You lack outerwear. A denim jacket or light blazer will help you layer for colder weather and elevate simple tops."}
+    if cats["Shoes"] == 0:
+        return {"suggestion": "Everyday sneakers or loafers", "reason": "You haven't added any shoes yet! Shoes are the foundation of your outfit."}
+    
+    if formalities["FORMAL"] == 0 and formalities["CASUAL"] > 3:
+        return {"suggestion": "A formal shirt or dress pants", "reason": "Your wardrobe leans very casual. Adding one formal piece will prepare you for unexpected events or nice dinners."}
+    if formalities["CASUAL"] == 0 and formalities["FORMAL"] > 3:
+        return {"suggestion": "A high-quality casual t-shirt", "reason": "Your wardrobe is very formal. A premium casual tee will balance things out for weekend wear."}
+
+    ratio = cats["Top"] / max(1, cats["Bottom"])
+    if ratio > 4:
+        return {"suggestion": "Versatile Bottoms", "reason": f"You have a {ratio:.1f}x ratio of tops to bottoms. Buying one new pair of pants will instantly create {cats['Top']} new outfit combinations."}
+
+    return {"suggestion": "Statement Accessory", "reason": "Your core wardrobe is well-balanced! Consider adding a watch, necklace, or statement belt to add personality to your outfits."}

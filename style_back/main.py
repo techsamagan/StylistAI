@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.database import engine
 from app.models import Base
-from app.routers import health, closet, outfits, auth, suggestions, calendar, weather
+from app.routers import health, closet, outfits, auth, suggestions, calendar, weather, travel, shopping
 
 Base.metadata.create_all(bind=engine)
 
@@ -33,6 +33,8 @@ app.include_router(auth.router)
 app.include_router(suggestions.router)
 app.include_router(calendar.router)
 app.include_router(weather.router)
+app.include_router(travel.router)
+app.include_router(shopping.router)
 
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 

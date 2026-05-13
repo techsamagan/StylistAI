@@ -38,6 +38,18 @@ const GeneratorView = () => {
   const [error,   setError]       = useState(null);
   const [saving,  setSaving]      = useState(false);
   const [toast,   setToast]       = useState(null);
+  const [weather, setWeather]     = useState(null);
+  const [tryOnLoading, setTryOnLoading] = useState(false);
+  const [tryOnImage, setTryOnImage] = useState(null);
+
+  React.useEffect(() => {
+    if (isApiConfigured()) {
+      const userCity = localStorage.getItem('user_city');
+      if (userCity) {
+        api.getWeather({ city: userCity }).then(setWeather).catch(() => {});
+      }
+    }
+  }, []);
 
   const vibeInfo = getVibeInfo(vibe);
 
@@ -46,7 +58,11 @@ const GeneratorView = () => {
     setStep('loading');
     if (isApiConfigured()) {
       try {
-        const res = await api.generateOutfit({ context, vibe });
+        const req = { context, vibe };
+        if (weather && weather.temp_c !== undefined) {
+          req.weather_temp_c = weather.temp_c;
+        }
+        const res = await api.generateOutfit(req);
         setOutfit(res);
         setStep('result');
       } catch (e) {
@@ -78,16 +94,47 @@ const GeneratorView = () => {
     }
   };
 
-  const handleReset = () => { setOutfit(null); setStep('config'); setError(null); };
+  const handleTryOn = async () => {
+    if (!outfit || !outfit.items.length) return;
+    setTryOnLoading(true);
+    setTryOnImage(null);
+    try {
+      if (isApiConfigured()) {
+        const outfit_items = outfit.items.map(i => `${i.color ? i.color + ' ' : ''}${i.name}`);
+        const res = await api.virtualTryOn({ outfit_items, context });
+        setTryOnImage(res.image_url);
+        setToast('Try-on image generated!');
+      } else {
+        await new Promise(r => setTimeout(r, 2000));
+        setTryOnImage('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80');
+        setToast('Mock Try-on image generated!');
+      }
+    } catch (e) {
+      setToast(e.body?.detail || e.message || 'Failed to generate try-on.');
+    } finally {
+      setTryOnLoading(false);
+    }
+  };
+
+  const handleReset = () => { setOutfit(null); setStep('config'); setError(null); setTryOnImage(null); };
 
   const items = outfit?.items ?? [];
 
   return (
     <div className="animate-fade-up max-w-2xl mx-auto">
 
-      <div className="mb-7">
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">Style Generator</h1>
-        <p className="text-slate-500 text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
+      <div className="mb-7 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Style Generator</h1>
+          <p className="text-slate-500 text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
+        </div>
+        {weather && (
+          <div className="flex items-center gap-2 bg-[#121f17] border border-[#1e2f22] px-3 py-1.5 rounded-xl text-sm font-medium">
+            <span className="material-symbols-outlined text-[16px] text-primary">{weather.icon === 'clear_day' ? 'sunny' : 'cloudy'}</span>
+            <span className="text-white">{weather.temp_c?.toFixed(0)}°C</span>
+            <span className="text-slate-500 text-xs hidden sm:inline">— {weather.city?.split(',')[0]}</span>
+          </div>
+        )}
       </div>
 
       {/* ── Config step ─────────────────────────── */}
@@ -272,16 +319,42 @@ const GeneratorView = () => {
             </div>
           )}
 
+          {/* Try On Image */}
+          {tryOnImage && (
+            <div className="bg-[#121f17] border border-primary/30 p-2 rounded-2xl animate-fade-in mt-4">
+              <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#0d1a12]">
+                 <img src={tryOnImage} alt="Virtual Try-On" className="w-full h-full object-cover" />
+                 <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                    AI Preview
+                 </div>
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={handleSave}
               disabled={saving || !items.length}
-              className="flex-1 flex items-center justify-center gap-2 bg-primary text-[#0d1a12] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#121f17] border border-[#1e2f22] text-white py-3 rounded-2xl font-bold text-sm hover:border-[#2a4032] disabled:opacity-40 transition-all active:scale-[.98]"
             >
               <span className="material-symbols-outlined text-[16px]">{saving ? 'hourglass_top' : 'bookmark_add'}</span>
-              {saving ? 'Saving…' : 'Save Outfit'}
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+            <button
+              type="button"
+              onClick={handleTryOn}
+              disabled={tryOnLoading || !items.length}
+              className="flex-[2] flex items-center justify-center gap-2 bg-primary text-[#0d1a12] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
+            >
+              {tryOnLoading ? (
+                 <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
+              ) : (
+                 <span className="material-symbols-outlined text-[16px]">accessibility_new</span>
+              )}
+              {tryOnLoading ? 'Generating Image…' : 'Virtual Try-On'}
             </button>
             <button
               type="button"

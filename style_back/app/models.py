@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, Float
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -12,6 +12,9 @@ class UserModel(Base):
     name = Column(String(255), nullable=True)
     city = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    height_cm = Column(Float, nullable=True)
+    weight_kg = Column(Float, nullable=True)
+    avatar_url = Column(Text, nullable=True)
 
 
 class ClosetItemModel(Base):
@@ -49,3 +52,18 @@ class SavedOutfitModel(Base):
     items_json = Column(Text, nullable=False)
     explanation = Column(Text, nullable=False)
     saved_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class ShoppingItemModel(Base):
+    __tablename__ = "shopping_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False)
+    brand = Column(String(255), nullable=True)
+    category = Column(String(50), nullable=False)  # Top/Bottom/Outerwear/Shoes/Accessory
+    price = Column(Float, nullable=True)
+    color = Column(String(50), nullable=True)
+    description = Column(Text, nullable=True)
+    image_url = Column(Text, nullable=True)
+    tags = Column(String(255), nullable=True)  # comma-separated e.g. "sport,casual"
+    store_url = Column(Text, nullable=True)   # link to the product page on the store website

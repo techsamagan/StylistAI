@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CloudRain, Cloud, Sun, Briefcase, Thermometer, RefreshCw, Check, Sparkles } from 'lucide-react';
-import { api, isApiConfigured } from '../api/client';
+import { api, isApiConfigured, getCachedSync } from '../api/client';
 import Toast from '../components/Toast';
 
 const WeatherIcon = ({ icon, size = 14 }) => {
@@ -25,11 +25,15 @@ const StatChip = ({ icon, label, sub }) => (
 );
 
 const DashboardView = ({ setView }) => {
-  const [outfit, setOutfit]             = useState(null);
-  const [outfitLoading, setOutfitLoading] = useState(true);
-  const [weather, setWeather]           = useState(null);
-  const [nextEvent, setNextEvent]       = useState(null);
+  const [outfit, setOutfit]             = useState(() => getCachedSync('outfit-today-false') || null);
+  const [outfitLoading, setOutfitLoading] = useState(() => !getCachedSync('outfit-today-false'));
+  const [weather, setWeather]           = useState(() => getCachedSync('weather-') || null);
+  const [nextEvent, setNextEvent]       = useState(() => {
+    const cached = getCachedSync('calendar-events-');
+    return cached && cached.length > 0 ? cached[0] : null;
+  });
   const [closetCount, setClosetCount]   = useState(null);
+  const [gapAnalysis, setGapAnalysis]   = useState(() => getCachedSync('wardrobe-gaps') || null);
   const [toast, setToast]               = useState(null);
 
   const userName = (() => { try { return localStorage.getItem('user_name') || ''; } catch { return ''; } })();
@@ -39,11 +43,13 @@ const DashboardView = ({ setView }) => {
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   const loadOutfit = useCallback(async (refresh = false) => {
-    setOutfitLoading(true);
+    const timer = setTimeout(() => setOutfitLoading(true), 150);
     try {
       const result = await api.getTodayOutfit(refresh);
+      clearTimeout(timer);
       setOutfit(result);
     } catch {
+      clearTimeout(timer);
       setOutfit(FALLBACK);
     } finally {
       setOutfitLoading(false);
@@ -57,6 +63,7 @@ const DashboardView = ({ setView }) => {
     const today = new Date().toISOString().slice(0, 10);
     api.getCalendarEvents(today).then(ev => { if (ev?.length) setNextEvent(ev[0]); }).catch(() => {});
     api.getCloset().then(items => setClosetCount(items.length)).catch(() => {});
+    api.getWardrobeGaps().then(setGapAnalysis).catch(() => {});
   }, [loadOutfit, userCity]);
 
   const items = outfit?.items ?? [];
@@ -237,6 +244,20 @@ const DashboardView = ({ setView }) => {
               <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── Gap Analysis ──────────────────────── */}
+      {gapAnalysis && items.length > 0 && (
+        <div className="bg-[#121f17] border border-primary/30 shadow-lg shadow-primary/5 rounded-2xl p-5 mt-6 flex gap-4 items-start">
+          <div className="size-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 text-primary mt-1">
+             <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-1">Wardrobe Analysis</h3>
+            <p className="text-white font-bold text-lg mb-1.5">Consider getting: {gapAnalysis.suggestion}</p>
+            <p className="text-slate-400 text-sm leading-relaxed">{gapAnalysis.reason}</p>
+          </div>
         </div>
       )}
 

@@ -231,3 +231,30 @@ def delete_saved(
     db.delete(outfit)
     db.commit()
     return None
+
+import os
+from openai import OpenAI
+from app.schemas import TryOnRequest, TryOnResponse
+
+@router.post("/try-on", response_model=TryOnResponse)
+def virtual_try_on(req: TryOnRequest):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="OpenAI API key not configured")
+    
+    client = OpenAI(api_key=api_key)
+    items_desc = ", ".join(req.outfit_items)
+    prompt = f"A photorealistic, high-fashion full-body portrait of a stylish person wearing the following outfit: {items_desc}. The context is: {req.context}. The person is standing confidently, studio lighting, highly detailed, premium look, clear facial features, modern aesthetic."
+    
+    try:
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
+        image_url = response.data[0].url
+        return TryOnResponse(image_url=image_url)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")

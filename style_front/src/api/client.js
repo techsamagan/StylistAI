@@ -35,6 +35,27 @@ async function request(path, options = {}) {
   return res.json();
 }
 
+const memCache = {};
+
+async function cachedRequest(path, cacheKey) {
+  if (memCache[cacheKey]) {
+    // Background update
+    request(path).then(res => { memCache[cacheKey] = res; }).catch(() => {});
+    return Promise.resolve(memCache[cacheKey]);
+  }
+  const res = await request(path);
+  memCache[cacheKey] = res;
+  return res;
+}
+
+export function getCachedSync(cacheKey) {
+  return memCache[cacheKey] || null;
+}
+
+function clearCache() {
+  for (let key in memCache) delete memCache[key];
+}
+
 export const api = {
   health() {
     return request('/health');
@@ -68,6 +89,24 @@ export const api = {
     });
   },
 
+  getProfile() {
+    return request('/auth/me');
+  },
+
+  updateProfile(data) {
+    return request('/auth/me', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }).then(res => {
+      if (res?.access_token) {
+        localStorage.setItem('auth_token', res.access_token);
+        localStorage.setItem('user_city', res.city || '');
+        localStorage.setItem('user_name', res.name || '');
+      }
+      return res;
+    });
+  },
+
   getCloset({ category = null, color = null, formality = null, search = null } = {}) {
     const params = new URLSearchParams();
     if (category != null && category !== '' && category !== 'all') params.set('category', category);
@@ -75,14 +114,15 @@ export const api = {
     if (formality != null && formality !== '') params.set('formality', formality);
     if (search != null && search.trim() !== '') params.set('search', search.trim());
     const q = params.toString() ? `?${params.toString()}` : '';
-    return request(`/closet${q}`);
+    return cachedRequest(`/closet${q}`, `closet-${q}`);
   },
 
   getClosetItem(id) {
-    return request(`/closet/${id}`);
+    return cachedRequest(`/closet/${id}`, `closet-item-${id}`);
   },
 
   createClosetItem(item) {
+    clearCache();
     return request('/closet', {
       method: 'POST',
       body: JSON.stringify(item),
@@ -90,6 +130,7 @@ export const api = {
   },
 
   uploadClosetItem(formData) {
+    clearCache();
     const url = `${BASE}/closet/upload`;
     const token = getAuthToken();
     return fetch(url, {
@@ -108,6 +149,7 @@ export const api = {
   },
 
   updateClosetItem(id, data) {
+    clearCache();
     return request(`/closet/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -115,14 +157,16 @@ export const api = {
   },
 
   deleteClosetItem(id) {
+    clearCache();
     return request(`/closet/${id}`, { method: 'DELETE' });
   },
 
   getTodayOutfit(refresh = false) {
-    return request(`/outfits/today${refresh ? '?refresh=true' : ''}`);
+    return cachedRequest(`/outfits/today${refresh ? '?refresh=true' : ''}`, `outfit-today-${refresh}`);
   },
 
   generateOutfit({ context, weather_temp_c, formality_preference, vibe }) {
+    // Generative AI should not be aggressively cached, but we could cache the exact request
     return request('/outfits/generate', {
       method: 'POST',
       body: JSON.stringify({
@@ -135,6 +179,7 @@ export const api = {
   },
 
   saveOutfit({ context, items, explanation }) {
+    clearCache();
     return request('/outfits/save', {
       method: 'POST',
       body: JSON.stringify({ context, items, explanation }),
@@ -142,21 +187,33 @@ export const api = {
   },
 
   getSavedOutfits() {
-    return request('/outfits/saved');
+    return cachedRequest('/outfits/saved', 'saved-outfits');
+  },
+
+  virtualTryOn(data) {
+    return request('/outfits/try-on', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   },
 
   getSuggestionsToday() {
     const city = typeof window !== 'undefined' ? localStorage.getItem('user_city') : null;
     const q = city ? `?city=${encodeURIComponent(city)}` : '';
-    return request(`/suggestions/today${q}`);
+    return cachedRequest(`/suggestions/today${q}`, `suggestions-today-${q}`);
+  },
+
+  getWardrobeGaps() {
+    return cachedRequest('/suggestions/gaps', 'wardrobe-gaps');
   },
 
   getCalendarEvents(date = null) {
     const q = date ? `?date=${encodeURIComponent(date)}` : '';
-    return request(`/calendar/events${q}`);
+    return cachedRequest(`/calendar/events${q}`, `calendar-events-${q}`);
   },
 
   createCalendarEvent(event) {
+    clearCache();
     return request('/calendar/events', {
       method: 'POST',
       body: JSON.stringify(event),
@@ -164,6 +221,7 @@ export const api = {
   },
 
   deleteCalendarEvent(id) {
+    clearCache();
     return request(`/calendar/events/${id}`, { method: 'DELETE' });
   },
 
@@ -173,7 +231,51 @@ export const api = {
     if (city) params.set('city', city);
     if (lat != null) params.set('lat', lat);
     if (lon != null) params.set('lon', lon);
-    return request(`/weather/current?${params.toString()}`);
+    return cachedRequest(`/weather/current?${params.toString()}`, `weather-${params.toString()}`);
+  },
+
+  generatePackingList(data) {
+    return request('/travel/pack', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getShoppingItems({ category, tags } = {}) {
+    const params = new URLSearchParams();
+    if (category && category !== 'All') params.set('category', category);
+    if (tags) params.set('tags', tags);
+    const q = params.toString() ? `?${params.toString()}` : '';
+    return request(`/shopping/items${q}`);
+  },
+
+  shoppingTryOn({ item_id, context }) {
+    return request('/shopping/try-on', {
+      method: 'POST',
+      body: JSON.stringify({ item_id, context }),
+    });
+  },
+
+  uploadAvatar(formData) {
+    const url = `${BASE}/auth/avatar`;
+    const token = getAuthToken();
+    return fetch(url, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = new Error(res.statusText);
+        err.status = res.status;
+        try { err.body = await res.json(); } catch { err.body = await res.text(); }
+        throw err;
+      }
+      return res.json();
+    });
+  },
+
+  updateBodyMeasurements({ height_cm, weight_kg }) {
+    return this.updateProfile({ height_cm, weight_kg });
   },
 };
 

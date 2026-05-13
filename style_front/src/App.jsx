@@ -7,6 +7,9 @@ import AuthFlow from './pages/AuthFlow';
 import DashboardView from './pages/DashboardView';
 import WardrobeView from './pages/WardrobeView';
 import GeneratorView from './pages/GeneratorView';
+import TravelView from './pages/TravelView';
+import ProfileView from './pages/ProfileView';
+import ShoppingView from './pages/ShoppingView';
 import AppShell from './components/AppShell';
 import { ClosetFilterProvider } from './context/ClosetFilterContext';
 
@@ -42,6 +45,9 @@ const App = () => {
     if (location.pathname.includes('dashboard')) setActiveTab('dashboard');
     else if (location.pathname.includes('wardrobe')) setActiveTab('wardrobe');
     else if (location.pathname.includes('generator')) setActiveTab('generator');
+    else if (location.pathname.includes('travel')) setActiveTab('travel');
+    else if (location.pathname.includes('shopping')) setActiveTab('shopping');
+    else if (location.pathname.includes('profile')) setActiveTab('profile');
   }, [location]);
 
   const handleLogin = () => {
@@ -82,6 +88,9 @@ const App = () => {
         <Route path="dashboard" element={<DashboardView setView={handleNavClick} />} />
         <Route path="wardrobe" element={<WardrobeView />} />
         <Route path="generator" element={<GeneratorView />} />
+        <Route path="travel" element={<TravelView />} />
+        <Route path="shopping" element={<ShoppingView />} />
+        <Route path="profile" element={<ProfileView onLogout={handleLogout} />} />
         <Route path="analytics" element={<DashboardView setView={handleNavClick} />} />
 
         {/* Default redirect when visiting /app */}

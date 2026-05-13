@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api, isApiConfigured } from '../api/client';
+import { api, isApiConfigured, getCachedSync } from '../api/client';
 import { useClosetFilters } from '../context/ClosetFilterContext';
 import ItemModal from '../components/ItemModal';
 import Toast from '../components/Toast';
@@ -156,31 +156,46 @@ const ListRow = ({ item, onEdit, onDelete, onWear }) => (
 /* ── Main View ────────────────────────────── */
 const WardrobeView = () => {
   const { refreshKey, triggerRefresh } = useClosetFilters();
-  const [items,      setItems]      = useState([]);
-  const [loading,    setLoading]    = useState(true);
   const [viewMode,   setViewMode]   = useState('grid');
   const [category,   setCategory]   = useState('all');
   const [search,     setSearch]     = useState('');
+  
+  const [items,      setItems]      = useState(() => {
+    const params = new URLSearchParams();
+    const q = params.toString() ? `?${params.toString()}` : '';
+    const cached = getCachedSync(`closet-${q}`);
+    return cached ? cached.map(normalizeItem) : [];
+  });
+  
+  const [loading,    setLoading]    = useState(() => items.length === 0);
+
   const [editItem,   setEditItem]   = useState(null);
   const [showAdd,    setShowAdd]    = useState(false);
   const [toast,      setToast]      = useState(null);
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    const timer = setTimeout(() => { if (!cancelled) setLoading(true); }, 150);
+    
     if (isApiConfigured()) {
       const params = {};
       if (category !== 'all') params.category = category;
       if (search.trim()) params.search = search.trim();
       api.getCloset(params)
-        .then(data => { if (!cancelled) setItems(data.map(normalizeItem)); })
-        .catch(() => { if (!cancelled) setItems([]); })
-        .finally(() => { if (!cancelled) setLoading(false); });
+        .then(data => { 
+          clearTimeout(timer);
+          if (!cancelled) { setItems(data.map(normalizeItem)); setLoading(false); }
+        })
+        .catch(() => { 
+          clearTimeout(timer);
+          if (!cancelled) { setItems([]); setLoading(false); }
+        });
     } else {
+      clearTimeout(timer);
       setItems([]);
       setLoading(false);
     }
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [category, search, refreshKey]);
 
   const handleDelete = async (item) => {
@@ -273,7 +288,7 @@ const WardrobeView = () => {
       </div>
 
       {/* ── Content ─────────────────────── */}
-      {loading ? (
+      {loading && items.length === 0 ? (
         viewMode === 'grid' ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
