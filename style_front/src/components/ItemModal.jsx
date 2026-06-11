@@ -76,28 +76,28 @@ const ItemModal = ({ item, onClose, onSaved }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+      <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <h2 className="text-xl font-bold text-white mb-6">
           {isEdit ? 'Edit Item' : 'Add New Item'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-clay mb-1">Name *</label>
             <input
               type="text"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Navy Blazer"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Category</label>
+            <label className="block text-sm font-medium text-clay mb-1">Category</label>
             <select
               value={form.category}
               onChange={e => setForm({ ...form, category: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -105,15 +105,15 @@ const ItemModal = ({ item, onClose, onSaved }) => {
 
           {!isEdit && (
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Photo</label>
+              <label className="block text-sm font-medium text-clay mb-1">Photo</label>
               <div
-                className="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                className="relative border-2 border-dashed border-[#43372A] rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-colors"
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={e => e.preventDefault()}
                 onDrop={handleDrop}
               >
                 {imagePreview ? (
-                  <div className="relative h-40 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                  <div className="relative h-40 bg-[#251D16] flex items-center justify-center">
                     <img src={imagePreview} alt="preview" className="h-full w-full object-contain p-2" />
                     <button
                       type="button"
@@ -124,7 +124,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
                     </button>
                   </div>
                 ) : (
-                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 gap-2">
+                  <div className="h-32 flex flex-col items-center justify-center text-clay gap-2">
                     <span className="material-symbols-outlined text-[32px]">upload</span>
                     <span className="text-sm">Click or drag to upload photo</span>
                   </div>
@@ -138,7 +138,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
                     value={form.image_url}
                     onChange={e => { setForm({ ...form, image_url: e.target.value }); if (e.target.value) setImagePreview(e.target.value); }}
                     placeholder="Or paste image URL…"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2 px-3 text-white placeholder:text-clay/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>
               )}
@@ -147,34 +147,34 @@ const ItemModal = ({ item, onClose, onSaved }) => {
 
           {isEdit && (
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Image URL</label>
+              <label className="block text-sm font-medium text-clay mb-1">Image URL</label>
               <input
                 type="url"
                 value={form.image_url}
                 onChange={e => setForm({ ...form, image_url: e.target.value })}
                 placeholder="https://…"
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Color</label>
+              <label className="block text-sm font-medium text-clay mb-1">Color</label>
               <input
                 type="text"
                 value={form.color}
                 onChange={e => setForm({ ...form, color: e.target.value })}
                 placeholder="e.g. navy, black"
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Formality</label>
+              <label className="block text-sm font-medium text-clay mb-1">Formality</label>
               <select
                 value={form.formality}
                 onChange={e => setForm({ ...form, formality: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {['CASUAL', 'MODERATE', 'FORMAL', 'UNIVERSAL'].map(f => (
                   <option key={f} value={f}>{f}</option>
@@ -183,13 +183,13 @@ const ItemModal = ({ item, onClose, onSaved }) => {
             </div>
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-[#CF8675] text-sm">{error}</p>}
 
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="flex-1 border border-[#33291F] text-clay py-3 rounded-xl font-medium hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
