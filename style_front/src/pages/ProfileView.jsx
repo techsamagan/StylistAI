@@ -120,7 +120,7 @@ const ProfileView = ({ onLogout }) => {
   return (
     <div className="animate-fade-up max-w-2xl mx-auto">
       <div className="mb-7">
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">My Profile</h1>
+        <h1 className="text-3xl font-serif font-light text-white tracking-tight">My Profile</h1>
         <p className="text-slate-500 text-sm mt-1">Manage your account settings and preferences.</p>
       </div>
 

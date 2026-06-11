@@ -238,7 +238,7 @@ export default function ShoppingView() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-serif text-2xl text-white">Recommendations</h1>
+        <h1 className="font-serif font-light text-3xl text-white tracking-tight">Recommendations</h1>
         <p className="text-sm text-clay mt-1">Shopping curated to the colors that flatter you most.</p>
       </div>
 

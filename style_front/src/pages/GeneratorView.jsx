@@ -125,7 +125,7 @@ const GeneratorView = () => {
 
       <div className="mb-7 flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Style Generator</h1>
+          <h1 className="text-3xl font-serif font-light text-white tracking-tight">Style Generator</h1>
           <p className="text-slate-500 text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
         </div>
         {weather && (

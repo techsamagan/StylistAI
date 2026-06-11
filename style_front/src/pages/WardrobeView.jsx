@@ -218,7 +218,7 @@ const WardrobeView = () => {
       {/* ── Top header ──────────────────── */}
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">My Closet</h1>
+          <h1 className="text-3xl font-serif font-light text-white tracking-tight">My Closet</h1>
           <p className="text-slate-500 text-sm mt-0.5">
             {loading ? 'Loading…' : `${items.length} item${items.length !== 1 ? 's' : ''}`}
           </p>

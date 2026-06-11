@@ -129,7 +129,7 @@ const DashboardView = ({ setView }) => {
       {/* ── Header ────────────────────────────── */}
       <div className="mb-6">
         <p className="text-slate-500 text-sm">{dateStr}</p>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white mt-0.5">
+        <h1 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-white mt-0.5">
           {greeting}{userName ? `, ${userName}` : ''}.
         </h1>
       </div>

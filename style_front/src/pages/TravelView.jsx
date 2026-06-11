@@ -39,7 +39,7 @@ const TravelView = () => {
   return (
     <div className="animate-fade-up max-w-4xl mx-auto">
       <div className="mb-7">
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">Smart Packing List</h1>
+        <h1 className="text-3xl font-serif font-light text-white tracking-tight">Smart Packing List</h1>
         <p className="text-slate-500 text-sm mt-1">Tell us where you're going. We'll check the weather and pack your bags.</p>
       </div>
 
