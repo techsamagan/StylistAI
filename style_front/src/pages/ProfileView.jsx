@@ -126,7 +126,7 @@ const ProfileView = ({ onLogout }) => {
 
       <div className="bg-[#1E1813] border border-[#33291F] p-6 rounded-2xl">
         {error && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl">
+          <div className="mb-6 bg-[#9B4A3D]/12 border border-[#9B4A3D]/30 text-[#D69685] text-sm px-4 py-3 rounded-xl">
             {error}
           </div>
         )}
@@ -289,7 +289,7 @@ const ProfileView = ({ onLogout }) => {
         <button
           type="button"
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 py-3 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-[.98]"
+          className="w-full flex items-center justify-center gap-2 bg-[#9B4A3D]/10 border border-[#9B4A3D]/30 text-[#CF8675] hover:bg-[#9B4A3D] hover:text-white hover:border-[#9B4A3D] py-3 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[.98]"
         >
           <span className="material-symbols-outlined text-[18px]">logout</span>
           Sign Out
