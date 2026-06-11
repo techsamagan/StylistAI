@@ -89,7 +89,7 @@ const TravelView = () => {
           </form>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
+            <div className="bg-[#9B4A3D]/12 border border-[#9B4A3D]/25 text-[#CF8675] p-4 rounded-xl text-sm">
               {error}
             </div>
           )}

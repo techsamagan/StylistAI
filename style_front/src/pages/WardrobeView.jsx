@@ -77,7 +77,7 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
         <button
           type="button"
           onClick={() => onDelete(item)}
-          className="bg-red-500/20 text-red-400 text-xs px-2.5 py-1.5 rounded-lg hover:bg-red-500/30 transition-colors"
+          className="bg-[#9B4A3D]/25 text-[#CF8675] text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#9B4A3D]/35 transition-colors"
         >
           <span className="material-symbols-outlined text-[14px]">delete</span>
         </button>
@@ -146,7 +146,7 @@ const ListRow = ({ item, onEdit, onDelete, onWear }) => (
       <button type="button" onClick={() => onEdit(item)} className="bg-white/5 text-slate-300 px-2.5 py-1 rounded-lg text-xs hover:bg-white/10 transition-colors">
         Edit
       </button>
-      <button type="button" onClick={() => onDelete(item)} className="bg-red-500/10 text-red-400 p-1 rounded-lg hover:bg-red-500/20 transition-colors">
+      <button type="button" onClick={() => onDelete(item)} className="bg-[#9B4A3D]/12 text-[#CF8675] p-1 rounded-lg hover:bg-[#9B4A3D]/25 transition-colors">
         <span className="material-symbols-outlined text-[13px]">delete</span>
       </button>
     </div>
