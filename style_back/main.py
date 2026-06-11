@@ -15,18 +15,18 @@ UPLOADS_DIR = Path(__file__).parent / "uploads"
 UPLOADS_DIR.mkdir(exist_ok=True)
 
 # ── Access control ───────────────────────────────────────────────────────────
-# Backstop IP allowlist (defense-in-depth alongside the OS firewall). Only these
-# client IPs may reach the API. Override with ALLOWED_IPS="a,b,c" in .env.
+# Optional IP allowlist (opt-in). When ALLOWED_IPS is set (e.g. for a private
+# LAN deployment), only those client IPs may reach the API. When UNSET (the
+# default — normal production), no IP restriction is applied. Set it in .env to
+# lock the app to specific machines.
 ALLOWED_IPS = {
-    ip.strip() for ip in os.getenv(
-        "ALLOWED_IPS", "127.0.0.1,::1,10.0.0.32,10.0.0.116"
-    ).split(",") if ip.strip()
+    ip.strip() for ip in os.getenv("ALLOWED_IPS", "").split(",") if ip.strip()
 }
-# Frontend origins allowed to call the API (this machine's LAN IP included so
-# 10.0.0.116 can load the app from http://10.0.0.32:3000).
+# CORS: comma-separated frontend origins. Defaults to localhost for dev; set
+# ALLOWED_ORIGINS to your deployed frontend URL(s) in production.
 ALLOWED_ORIGINS = [o.strip() for o in os.getenv(
     "ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,http://10.0.0.32:3000",
+    "http://localhost:3000,http://127.0.0.1:3000",
 ).split(",") if o.strip()]
 
 app = FastAPI(
@@ -38,9 +38,11 @@ app = FastAPI(
 
 @app.middleware("http")
 async def restrict_client_ip(request: Request, call_next):
-    client = request.client.host if request.client else None
-    if client not in ALLOWED_IPS:
-        return JSONResponse(status_code=403, content={"detail": "Forbidden"})
+    # No restriction unless an allowlist is configured.
+    if ALLOWED_IPS:
+        client = request.client.host if request.client else None
+        if client not in ALLOWED_IPS:
+            return JSONResponse(status_code=403, content={"detail": "Forbidden"})
     return await call_next(request)
 
 
