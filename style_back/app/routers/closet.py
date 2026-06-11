@@ -7,6 +7,8 @@ from app.schemas import ClosetItem, ClosetItemCreate, ClosetItemUpdate, Category
 from app.database import get_db
 from app.models import ClosetItemModel
 from app.auth_utils import get_current_user_id
+from app.color_analysis import palette_for_season
+from app.color_map import season_matches
 
 router = APIRouter(prefix="/closet", tags=["closet"])
 
@@ -33,6 +35,7 @@ def list_items(
     color: Optional[str] = None,
     formality: Optional[str] = None,
     search: Optional[str] = None,
+    season: Optional[str] = None,
     db: Session = Depends(get_db),
     user_id: Optional[int] = Depends(get_current_user_id),
 ):
@@ -52,7 +55,13 @@ def list_items(
             ClosetItemModel.category.ilike(s) |
             ClosetItemModel.color.ilike(s)
         )
-    return [_to_schema(i) for i in q.all()]
+    items = q.all()
+    # Perceptual color-season filter (applied in Python — see app.color_map).
+    if season and season.strip():
+        palette = palette_for_season(season)
+        if palette:
+            items = [i for i in items if season_matches(i.color, palette)]
+    return [_to_schema(i) for i in items]
 
 
 @router.get("/{item_id}", response_model=ClosetItem)

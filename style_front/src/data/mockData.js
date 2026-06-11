@@ -1,4 +1,4 @@
-/* Reference dashboard items matching the uploaded Digital Closet design */
+/* Reference dashboard items matching the uploaded ASANUR design */
 export const DASHBOARD_WARDROBE = [
   { id: 1, name: 'Oxford Shirt', tag: 'Top', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBju7RUqBntgGKE6lhRK8ESVEMLuiwTpexhuVsbc77L2_99GHboW8OTriB-zKTMd0ay7CASdu9H9s9RMvDphJaP1kzYayEkW2demUTbhyJciGi9AjXb1nfd5o2qCajKcKaegIPhpO5hkxZGiOdXXtqLSrvhd13iGUDZZLd1GlK68Ae4Rs1HgrZ4pqoIbsLzZMDtaQ67_BXmW5yB5cmmQmApS5uFdeLcuH_aj8JClC7nmAFzdfCKx0YeukE43clHRwGo6HFcPgkX-K4', formality: 'MODERATE', formalityValue: 65, colorDots: ['white', 'slate'] },
   { id: 2, name: 'Indigo Denim', tag: 'Bottom', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBk5SSfRM4npjoIrwaM8sAtmKCf0NgPW-qJc0TxCOh3fEdbvkzJc4e1fcqiY2NSLiOAPSxUovPJgXEqCjk-rGB3_sGdTnWzu78Ho5jfSizH8Y_3U8zdtpcDDsFW3jv9Q-GcqhcvMkXySkqFu5cFnnVckYHcvxaMJF63BeQDTpO-MAdckBa9BUDXBKclMNQPtSub3DPJWyDbmnVaHSWAMx-_cECD-CUbSEeQvc0UOR6WEJGAMqPmbf0n2qCq-_oQ4I_N7eZG1TcwL6I', formality: 'CASUAL', formalityValue: 25, colorDots: ['blue'] },

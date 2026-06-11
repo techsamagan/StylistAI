@@ -7,3 +7,6 @@ sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.0
 bcrypt>=4.0.0
 python-dotenv>=1.0.0
+Pillow>=10.0.0
+boto3>=1.34.0          # optional: only used when S3_BUCKET is set
+openai>=1.40.0         # used by shopping virtual try-on

@@ -3,21 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --primary: #13ec80;
-  --bg: #0d1a12;
-  --surface: #121f17;
-  --surface-2: #182519;
-  --border: #1e2f22;
-  --border-2: #2a4032;
+  --primary: #B7A98F;
+  --bg: #17120E;
+  --surface: #1E1813;
+  --surface-2: #251D16;
+  --border: #33291F;
+  --border-2: #43372A;
 }
 
 @layer base {
   body {
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
     background-color: var(--bg);
-    color: white;
+    color: #F6F3EC;
     -webkit-font-smoothing: antialiased;
   }
+  .font-serif, .wordmark { font-family: 'Fraunces', Georgia, serif; }
   ::-webkit-scrollbar { width: 3px; height: 3px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
@@ -46,8 +47,8 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0px rgba(19,236,128,.25); }
-  100% { box-shadow: 0 0 0 12px rgba(19,236,128,0);  }
+  0%   { box-shadow: 0 0 0 0px rgba(183,169,143,.25); }
+  100% { box-shadow: 0 0 0 12px rgba(183,169,143,0);  }
 }
 
 /* ─── Utility classes ───────────────────────── */
@@ -92,7 +93,7 @@
 
 /* ─── Gradient text ─────────────────────────── */
 .gradient-text {
-  background: linear-gradient(130deg, #13ec80 0%, #00d4ff 100%);
+  background: linear-gradient(130deg, #D8C9AC 0%, #8C8175 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -112,13 +113,13 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 18px; height: 18px;
   border-radius: 50%;
-  background: #13ec80;
+  background: #B7A98F;
   cursor: pointer;
-  box-shadow: 0 0 0 4px rgba(19,236,128,.18);
+  box-shadow: 0 0 0 4px rgba(183,169,143,.18);
   transition: box-shadow .2s;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 7px rgba(19,236,128,.2);
+  box-shadow: 0 0 0 7px rgba(183,169,143,.2);
 }
 
 /* ─── Material symbols ──────────────────────── */

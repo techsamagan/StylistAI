@@ -124,7 +124,7 @@ const ProfileView = ({ onLogout }) => {
         <p className="text-slate-500 text-sm mt-1">Manage your account settings and preferences.</p>
       </div>
 
-      <div className="bg-[#121f17] border border-[#1e2f22] p-6 rounded-2xl">
+      <div className="bg-[#1E1813] border border-[#33291F] p-6 rounded-2xl">
         {error && (
           <div className="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl">
             {error}
@@ -140,7 +140,7 @@ const ProfileView = ({ onLogout }) => {
               value={profile.name}
               onChange={handleChange}
               placeholder="Your name"
-              className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
@@ -152,7 +152,7 @@ const ProfileView = ({ onLogout }) => {
               value={profile.city}
               onChange={handleChange}
               placeholder="e.g. London"
-              className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
             />
             <p className="text-[10px] text-slate-500 mt-1.5 ml-1">Used to provide accurate weather-based outfit suggestions.</p>
           </div>
@@ -165,7 +165,7 @@ const ProfileView = ({ onLogout }) => {
               value={profile.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
               required
             />
           </div>
@@ -177,12 +177,12 @@ const ProfileView = ({ onLogout }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Leave blank to keep current password"
-              className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
           {/* ── Body Measurements ─────────────────────────────────────── */}
-          <div className="pt-4 border-t border-[#1e2f22]">
+          <div className="pt-4 border-t border-[#33291F]">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Body Measurements</p>
             <p className="text-[10px] text-slate-600 mb-3">Used to personalize virtual try-on results.</p>
             <div className="grid grid-cols-2 gap-4">
@@ -196,7 +196,7 @@ const ProfileView = ({ onLogout }) => {
                   placeholder="e.g. 175"
                   min={100}
                   max={250}
-                  className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <div>
@@ -209,17 +209,17 @@ const ProfileView = ({ onLogout }) => {
                   placeholder="e.g. 70"
                   min={30}
                   max={300}
-                  className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#1e2f22] flex justify-end">
+          <div className="pt-4 border-t border-[#33291F] flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 bg-primary text-[#0d1a12] px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10"
+              className="flex items-center gap-2 bg-primary text-[#17120E] px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10"
             >
               {loading ? (
                 <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
@@ -233,7 +233,7 @@ const ProfileView = ({ onLogout }) => {
       </div>
 
       {/* ── Your Photo (avatar for try-on) ─────────────────────────────── */}
-      <div className="mt-6 bg-[#121f17] border border-[#1e2f22] p-6 rounded-2xl">
+      <div className="mt-6 bg-[#1E1813] border border-[#33291F] p-6 rounded-2xl">
         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Your Photo</p>
         <p className="text-[10px] text-slate-600 mb-4">Used for advanced AI virtual try-on in the Shop. PNG or JPG, max 5 MB.</p>
 
@@ -247,7 +247,7 @@ const ProfileView = ({ onLogout }) => {
                 className="size-20 rounded-full object-cover border-2 border-primary/30"
               />
             ) : (
-              <div className="size-20 rounded-full bg-[#0d1a12] border-2 border-dashed border-[#1e2f22] flex items-center justify-center">
+              <div className="size-20 rounded-full bg-[#17120E] border-2 border-dashed border-[#33291F] flex items-center justify-center">
                 <span className="material-symbols-outlined text-[28px] text-slate-600">person</span>
               </div>
             )}
@@ -265,7 +265,7 @@ const ProfileView = ({ onLogout }) => {
             />
             <label
               htmlFor="avatar-upload"
-              className={`inline-flex items-center gap-2 cursor-pointer bg-[#0d1a12] border border-[#1e2f22] text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:border-[#2a4032] transition-all ${avatarUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center gap-2 cursor-pointer bg-[#17120E] border border-[#33291F] text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:border-[#43372A] transition-all ${avatarUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {avatarUploading ? (
                 <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>

@@ -14,7 +14,7 @@ const CATEGORIES = [
 ];
 
 const FORMALITY_COLORS = {
-  FORMAL:    'text-violet-400 bg-violet-400/10',
+  FORMAL:    'text-stone-400 bg-stone-400/10',
   MODERATE:  'text-primary bg-primary/10',
   CASUAL:    'text-sky-400 bg-sky-400/10',
   UNIVERSAL: 'text-amber-400 bg-amber-400/10',
@@ -35,7 +35,7 @@ function normalizeItem(item) {
 
 /* ── Skeleton card ────────────────────────── */
 const SkeletonCard = () => (
-  <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden">
+  <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden">
     <div className="aspect-[4/5] skeleton" />
     <div className="p-4 space-y-2">
       <div className="skeleton h-3 w-2/3 rounded" />
@@ -46,8 +46,8 @@ const SkeletonCard = () => (
 
 /* ── Grid item card ───────────────────────── */
 const GridCard = ({ item, onEdit, onDelete, onWear }) => (
-  <div className="group relative flex flex-col bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
-    <div className="relative aspect-[4/5] bg-[#0d1a12] flex items-center justify-center p-5">
+  <div className="group relative flex flex-col bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+    <div className="relative aspect-[4/5] bg-[#17120E] flex items-center justify-center p-5">
       {item.image ? (
         <img
           src={item.image}
@@ -55,7 +55,7 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
           className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
         />
       ) : (
-        <span className="material-symbols-outlined text-[48px] text-[#1e2f22]">checkroom</span>
+        <span className="material-symbols-outlined text-[48px] text-[#33291F]">checkroom</span>
       )}
 
       {/* Hover overlay */}
@@ -63,7 +63,7 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
         <button
           type="button"
           onClick={() => onWear(item)}
-          className="bg-primary text-[#0d1a12] font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors"
+          className="bg-primary text-[#17120E] font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors"
         >
           Wear
         </button>
@@ -102,7 +102,7 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
         )}
       </div>
       {item.formalityValue !== undefined && (
-        <div className="mt-2.5 h-0.5 w-full bg-[#1e2f22] rounded-full overflow-hidden">
+        <div className="mt-2.5 h-0.5 w-full bg-[#33291F] rounded-full overflow-hidden">
           <div className="h-full bg-primary/60 rounded-full" style={{ width: `${item.formalityValue}%` }} />
         </div>
       )}
@@ -112,11 +112,11 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
 
 /* ── List item row ────────────────────────── */
 const ListRow = ({ item, onEdit, onDelete, onWear }) => (
-  <div className="group flex items-center gap-4 bg-[#121f17] border border-[#1e2f22] rounded-xl p-3 hover:border-primary/20 hover:bg-[#162118] transition-all duration-200">
-    <div className="size-14 flex-shrink-0 bg-[#0d1a12] rounded-lg overflow-hidden flex items-center justify-center border border-[#1e2f22]">
+  <div className="group flex items-center gap-4 bg-[#1E1813] border border-[#33291F] rounded-xl p-3 hover:border-primary/20 hover:bg-[#251D16] transition-all duration-200">
+    <div className="size-14 flex-shrink-0 bg-[#17120E] rounded-lg overflow-hidden flex items-center justify-center border border-[#33291F]">
       {item.image
         ? <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
-        : <span className="material-symbols-outlined text-[22px] text-[#1e2f22]">checkroom</span>
+        : <span className="material-symbols-outlined text-[22px] text-[#33291F]">checkroom</span>
       }
     </div>
 
@@ -135,7 +135,7 @@ const ListRow = ({ item, onEdit, onDelete, onWear }) => (
       </div>
     </div>
 
-    <div className="w-20 h-1 bg-[#1e2f22] rounded-full overflow-hidden flex-shrink-0 hidden sm:block">
+    <div className="w-20 h-1 bg-[#33291F] rounded-full overflow-hidden flex-shrink-0 hidden sm:block">
       <div className="h-full bg-primary/50 rounded-full" style={{ width: `${item.formalityValue ?? 50}%` }} />
     </div>
 
@@ -233,12 +233,12 @@ const WardrobeView = () => {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search…"
-              className="bg-[#121f17] border border-[#1e2f22] rounded-xl py-2 pl-8 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40 w-44 transition-all focus:w-52"
+              className="bg-[#1E1813] border border-[#33291F] rounded-xl py-2 pl-8 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40 w-44 transition-all focus:w-52"
             />
           </div>
 
           {/* View toggle */}
-          <div className="flex items-center bg-[#121f17] border border-[#1e2f22] rounded-xl p-0.5">
+          <div className="flex items-center bg-[#1E1813] border border-[#33291F] rounded-xl p-0.5">
             <button
               type="button"
               onClick={() => setViewMode('grid')}
@@ -266,8 +266,8 @@ const WardrobeView = () => {
             onClick={() => setCategory(id)}
             className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-150 ${
               category === id
-                ? 'bg-primary text-[#0d1a12] shadow-lg shadow-primary/20'
-                : 'bg-[#121f17] border border-[#1e2f22] text-slate-400 hover:text-white hover:border-[#2a4032]'
+                ? 'bg-primary text-[#17120E] shadow-lg shadow-primary/20'
+                : 'bg-[#1E1813] border border-[#33291F] text-slate-400 hover:text-white hover:border-[#43372A]'
             }`}
           >
             {label}
@@ -283,7 +283,7 @@ const WardrobeView = () => {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search items…"
-          className="w-full bg-[#121f17] border border-[#1e2f22] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40"
+          className="w-full bg-[#1E1813] border border-[#33291F] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40"
         />
       </div>
 
@@ -303,7 +303,7 @@ const WardrobeView = () => {
       ) : items.length === 0 ? (
         /* ── Empty state ─────────────────── */
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="size-20 rounded-full bg-[#121f17] border border-[#1e2f22] flex items-center justify-center mb-5">
+          <div className="size-20 rounded-full bg-[#1E1813] border border-[#33291F] flex items-center justify-center mb-5">
             <span className="material-symbols-outlined text-[36px] text-slate-600">checkroom</span>
           </div>
           <h3 className="text-xl font-bold text-white mb-2">
@@ -318,7 +318,7 @@ const WardrobeView = () => {
             <button
               type="button"
               onClick={() => setShowAdd(true)}
-              className="flex items-center gap-2 bg-primary text-[#0d1a12] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all active:scale-[.98] shadow-lg shadow-primary/20"
+              className="flex items-center gap-2 bg-primary text-[#17120E] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all active:scale-[.98] shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined text-[18px]">upload</span>
               Upload your first item
@@ -341,7 +341,7 @@ const WardrobeView = () => {
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            className="group flex flex-col items-center justify-center min-h-[200px] bg-[#121f17] border-2 border-dashed border-[#1e2f22] rounded-2xl hover:border-primary/30 hover:bg-[#162118] transition-all cursor-pointer"
+            className="group flex flex-col items-center justify-center min-h-[200px] bg-[#1E1813] border-2 border-dashed border-[#33291F] rounded-2xl hover:border-primary/30 hover:bg-[#251D16] transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[32px] text-slate-700 group-hover:text-primary transition-colors mb-2">add_circle</span>
             <span className="text-xs font-bold text-slate-600 group-hover:text-slate-400 transition-colors">Add Item</span>
@@ -362,9 +362,9 @@ const WardrobeView = () => {
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            className="group w-full flex items-center gap-4 bg-[#121f17] border-2 border-dashed border-[#1e2f22] rounded-xl p-3 hover:border-primary/30 transition-all cursor-pointer"
+            className="group w-full flex items-center gap-4 bg-[#1E1813] border-2 border-dashed border-[#33291F] rounded-xl p-3 hover:border-primary/30 transition-all cursor-pointer"
           >
-            <div className="size-14 flex-shrink-0 bg-[#0d1a12] rounded-lg flex items-center justify-center border border-[#1e2f22] group-hover:border-primary/20">
+            <div className="size-14 flex-shrink-0 bg-[#17120E] rounded-lg flex items-center justify-center border border-[#33291F] group-hover:border-primary/20">
               <span className="material-symbols-outlined text-[22px] text-slate-600 group-hover:text-primary transition-colors">add</span>
             </div>
             <span className="text-sm font-medium text-slate-600 group-hover:text-slate-400 transition-colors">Add new item to closet</span>

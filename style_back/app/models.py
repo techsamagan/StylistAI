@@ -54,6 +54,21 @@ class SavedOutfitModel(Base):
     saved_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class ColorAnalysisModel(Base):
+    __tablename__ = "color_analyses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    selfie_key = Column(Text, nullable=True)        # storage key (local path or S3 object key)
+    season = Column(String(40), nullable=False)     # e.g. "Deep Winter"
+    undertone = Column(String(20), nullable=True)   # warm | cool | neutral
+    skin_hex = Column(String(7), nullable=True)     # detected dominant skin tone
+    palette_json = Column(Text, nullable=False)     # [{"name","hex","role"}, ...]
+    avoid_json = Column(Text, nullable=True)        # ["#hex", ...]
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 class ShoppingItemModel(Base):
     __tablename__ = "shopping_items"
 

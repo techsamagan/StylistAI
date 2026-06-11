@@ -5,21 +5,33 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#13ec80",
-        "primary-dark": "#0fba66",
-        "background-light": "#f6f8f7",
-        "background-dark": "#0d1a12",
-        "sidebar-border": "#1e2f22",
-        "card-dark": "#121f17",
-        "surface-2": "#1a2d1f",
-        "border-subtle": "#1e2f22",
-        "border-medium": "#2a4032",
+        // ASANUR — quiet luxury (espresso). `primary` is the single champagne accent.
+        primary: "#B7A98F",        // champagne (was green #13ec80)
+        "primary-dark": "#9C8E74",
+        champagne: "#B7A98F",
+        ink: "#16140F",
+        bone: "#F6F3EC",
+        clay: "#8C8175",
+        // espresso surfaces (dark canvas)
+        "background-light": "#F6F3EC",
+        "background-dark": "#17120E",
+        "card-dark": "#1E1813",
+        "surface-2": "#251D16",
+        "sidebar-border": "#33291F",
+        "border-subtle": "#33291F",
+        "border-medium": "#43372A",
       },
       fontFamily: {
-        display: ["Manrope", "sans-serif"],
+        // `display` is the workhorse UI/body font (was Manrope).
+        display: ["Instrument Sans", "system-ui", "sans-serif"],
+        sans: ["Instrument Sans", "system-ui", "sans-serif"],
+        // `serif` carries the ASANUR wordmark + editorial headlines.
+        serif: ["Fraunces", "Georgia", "serif"],
+      },
+      letterSpacing: {
+        wordmark: "0.34em",
       },
     },
   },
   plugins: [],
 }
-

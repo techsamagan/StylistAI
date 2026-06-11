@@ -57,7 +57,7 @@ const AuthForm = ({ mode, setMode, onSuccess }) => {
               value={name}
               onChange={e => setName(e.target.value)}
               required
-              className="w-full bg-[#1a2a1e] border border-[#1e2f22] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
         )}
@@ -70,7 +70,7 @@ const AuthForm = ({ mode, setMode, onSuccess }) => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full bg-[#1a2a1e] border border-[#1e2f22] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
+            className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
           />
         </div>
 
@@ -82,7 +82,7 @@ const AuthForm = ({ mode, setMode, onSuccess }) => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full bg-[#1a2a1e] border border-[#1e2f22] rounded-xl py-3 pl-10 pr-10 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
+            className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-3 pl-10 pr-10 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
           />
           <button
             type="button"
@@ -102,7 +102,7 @@ const AuthForm = ({ mode, setMode, onSuccess }) => {
               placeholder="Your city (for weather, optional)"
               value={city}
               onChange={e => setCity(e.target.value)}
-              className="w-full bg-[#1a2a1e] border border-[#1e2f22] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-3 pl-10 pr-4 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
         )}
@@ -116,7 +116,7 @@ const AuthForm = ({ mode, setMode, onSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-primary text-[#0d1a12] py-3.5 rounded-xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20 disabled:opacity-60 mt-1"
+          className="w-full bg-primary text-[#17120E] py-3.5 rounded-xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20 disabled:opacity-60 mt-1"
         >
           {loading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
         </button>
@@ -143,10 +143,10 @@ const ShowcasePanel = () => (
   <div className="hidden lg:flex flex-col justify-between h-full p-10">
     {/* Brand */}
     <div className="flex items-center gap-2.5">
-      <div className="size-9 bg-primary rounded-xl flex items-center justify-center text-[#0d1a12]">
+      <div className="size-9 bg-primary rounded-xl flex items-center justify-center text-[#17120E]">
         <span className="material-symbols-outlined icon-filled text-[20px]">checkroom</span>
       </div>
-      <span className="text-base font-extrabold tracking-tight">Digital Closet</span>
+      <span className="text-base font-extrabold tracking-tight">ASANUR</span>
     </div>
 
     {/* Feature cards */}
@@ -172,7 +172,7 @@ const ShowcasePanel = () => (
       ))}
     </div>
 
-    <p className="text-xs text-slate-600">© 2026 Digital Closet</p>
+    <p className="text-xs text-slate-600">© 2026 ASANUR</p>
   </div>
 );
 
@@ -182,10 +182,10 @@ const AuthFlow = ({ onComplete, initialView = 'login' }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#0d1a12] flex font-display">
+    <div className="min-h-screen bg-[#17120E] flex font-display">
 
       {/* Left: Showcase */}
-      <div className="hidden lg:block lg:w-1/2 bg-[#0a1610] border-r border-[#1e2f22] relative overflow-hidden">
+      <div className="hidden lg:block lg:w-1/2 bg-[#13100C] border-r border-[#33291F] relative overflow-hidden">
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
@@ -198,10 +198,10 @@ const AuthFlow = ({ onComplete, initialView = 'login' }) => {
         {/* Mobile logo */}
         <div className="lg:hidden absolute top-6 left-6 flex items-center gap-2">
           <a href="/" className="flex items-center gap-2 text-white no-underline">
-            <div className="size-8 bg-primary rounded-xl flex items-center justify-center text-[#0d1a12]">
+            <div className="size-8 bg-primary rounded-xl flex items-center justify-center text-[#17120E]">
               <span className="material-symbols-outlined icon-filled text-[17px]">checkroom</span>
             </div>
-            <span className="text-sm font-extrabold tracking-tight">Digital Closet</span>
+            <span className="text-sm font-extrabold tracking-tight">ASANUR</span>
           </a>
         </div>
 
@@ -218,7 +218,7 @@ const AuthFlow = ({ onComplete, initialView = 'login' }) => {
         <AuthForm mode={mode} setMode={setMode} onSuccess={onComplete} />
 
         <p className="mt-8 text-[11px] text-slate-700 text-center max-w-xs">
-          By continuing, you agree to Digital Closet's Terms of Service and Privacy Policy.
+          By continuing, you agree to ASANUR's Terms of Service and Privacy Policy.
         </p>
       </div>
     </div>

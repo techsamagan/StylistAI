@@ -94,6 +94,7 @@ def _describe_person(client: OpenAI, image_url: str, body_note: str) -> str:
 def list_shopping_items(
     category: Optional[str] = None,
     tags: Optional[str] = None,
+    season: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     q = db.query(ShoppingItemModel)
@@ -101,7 +102,15 @@ def list_shopping_items(
         q = q.filter(ShoppingItemModel.category == category)
     if tags:
         q = q.filter(ShoppingItemModel.tags.ilike(f"%{tags}%"))
-    return q.all()
+    items = q.all()
+    # Filter the feed to colors that flatter the user's color season.
+    if season and season.strip():
+        from app.color_analysis import palette_for_season
+        from app.color_map import season_matches
+        palette = palette_for_season(season)
+        if palette:
+            items = [i for i in items if season_matches(i.color, palette)]
+    return items
 
 
 @router.post("/try-on", response_model=ShoppingTryOnResponse)

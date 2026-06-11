@@ -256,6 +256,29 @@ export const api = {
     });
   },
 
+  // ── Color analysis (selfie-driven recommendations) ──────────────────────
+  analyzeSelfie(formData) {
+    const url = `${BASE}/color/analyze`;
+    const token = getAuthToken();
+    return fetch(url, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = new Error(res.statusText);
+        err.status = res.status;
+        try { err.body = await res.json(); } catch { err.body = await res.text(); }
+        throw err;
+      }
+      return res.json();
+    });
+  },
+
+  getColorShop() {
+    return request('/color/shop');
+  },
+
   uploadAvatar(formData) {
     const url = `${BASE}/auth/avatar`;
     const token = getAuthToken();

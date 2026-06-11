@@ -1,26 +1,52 @@
+import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.database import engine
 from app.models import Base
-from app.routers import health, closet, outfits, auth, suggestions, calendar, weather, travel, shopping
+from app.routers import health, closet, outfits, auth, suggestions, calendar, weather, travel, shopping, color
 
 Base.metadata.create_all(bind=engine)
 
 UPLOADS_DIR = Path(__file__).parent / "uploads"
 UPLOADS_DIR.mkdir(exist_ok=True)
 
+# ── Access control ───────────────────────────────────────────────────────────
+# Backstop IP allowlist (defense-in-depth alongside the OS firewall). Only these
+# client IPs may reach the API. Override with ALLOWED_IPS="a,b,c" in .env.
+ALLOWED_IPS = {
+    ip.strip() for ip in os.getenv(
+        "ALLOWED_IPS", "127.0.0.1,::1,10.0.0.32,10.0.0.116"
+    ).split(",") if ip.strip()
+}
+# Frontend origins allowed to call the API (this machine's LAN IP included so
+# 10.0.0.116 can load the app from http://10.0.0.32:3000).
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://10.0.0.32:3000",
+).split(",") if o.strip()]
+
 app = FastAPI(
-    title="Style API",
-    description="Backend for AI-powered wardrobe and outfit suggestions",
-    version="0.1.0",
+    title="ASANUR API",
+    description="Backend for the ASANUR AI styling and wardrobe assistant",
+    version="0.2.0",
 )
+
+
+@app.middleware("http")
+async def restrict_client_ip(request: Request, call_next):
+    client = request.client.host if request.client else None
+    if client not in ALLOWED_IPS:
+        return JSONResponse(status_code=403, content={"detail": "Forbidden"})
+    return await call_next(request)
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,10 +61,11 @@ app.include_router(calendar.router)
 app.include_router(weather.router)
 app.include_router(travel.router)
 app.include_router(shopping.router)
+app.include_router(color.router)
 
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
 
 @app.get("/")
 def root():
-    return {"message": "Style API", "docs": "/docs"}
+    return {"message": "ASANUR API", "docs": "/docs"}

@@ -15,7 +15,7 @@ const FALLBACK = {
 };
 
 const StatChip = ({ icon, label, sub }) => (
-  <div className="flex items-center gap-2.5 bg-[#121f17] border border-[#1e2f22] px-4 py-2.5 rounded-xl">
+  <div className="flex items-center gap-2.5 bg-[#1E1813] border border-[#33291F] px-4 py-2.5 rounded-xl">
     <span className="text-primary text-[16px] material-symbols-outlined flex-shrink-0">{icon}</span>
     <div>
       <p className="text-xs font-bold text-white leading-none">{label}</p>
@@ -80,7 +80,7 @@ const DashboardView = ({ setView }) => {
     }
     if (!items.length) {
       return (
-        <div className="h-64 md:h-80 rounded-xl border-2 border-dashed border-[#1e2f22] flex flex-col items-center justify-center text-slate-600 gap-3">
+        <div className="h-64 md:h-80 rounded-xl border-2 border-dashed border-[#33291F] flex flex-col items-center justify-center text-slate-600 gap-3">
           <span className="material-symbols-outlined text-[40px]">checkroom</span>
           <p className="text-sm text-center px-4">Upload clothes to your closet to get outfit suggestions</p>
           <button
@@ -98,7 +98,7 @@ const DashboardView = ({ setView }) => {
         {items.slice(0, 4).map((item, idx) => (
           <div
             key={item.id}
-            className={`relative bg-[#121f17] rounded-xl overflow-hidden border border-[#1e2f22] group ${
+            className={`relative bg-[#1E1813] rounded-xl overflow-hidden border border-[#33291F] group ${
               items.length === 3 && idx === 2 ? 'col-span-2' : ''
             }`}
           >
@@ -160,7 +160,7 @@ const DashboardView = ({ setView }) => {
       </div>
 
       {/* ── Main outfit card ──────────────────── */}
-      <div className="grid lg:grid-cols-5 gap-0 bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden mb-8">
+      <div className="grid lg:grid-cols-5 gap-0 bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden mb-8">
 
         {/* Image side */}
         <div className="lg:col-span-3 p-4 md:p-5">
@@ -168,7 +168,7 @@ const DashboardView = ({ setView }) => {
         </div>
 
         {/* Info side */}
-        <div className="lg:col-span-2 p-5 md:p-6 flex flex-col border-t lg:border-t-0 lg:border-l border-[#1e2f22]">
+        <div className="lg:col-span-2 p-5 md:p-6 flex flex-col border-t lg:border-t-0 lg:border-l border-[#33291F]">
           <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
             Today&apos;s Look
           </span>
@@ -187,7 +187,7 @@ const DashboardView = ({ setView }) => {
           {items.length > 0 && (
             <div className="flex-1 space-y-1.5 mb-4 overflow-y-auto hide-scrollbar">
               {items.map(item => (
-                <div key={item.id} className="flex items-center justify-between px-3 py-2 bg-[#0d1a12] rounded-lg border border-[#1e2f22] group hover:border-primary/20 transition-colors">
+                <div key={item.id} className="flex items-center justify-between px-3 py-2 bg-[#17120E] rounded-lg border border-[#33291F] group hover:border-primary/20 transition-colors">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="text-[9px] font-bold text-slate-600 uppercase tracking-wide w-14 flex-shrink-0">
                       {item.category}
@@ -206,7 +206,7 @@ const DashboardView = ({ setView }) => {
               type="button"
               onClick={() => items.length && setToast('Outfit logged for today!')}
               disabled={!items.length || outfitLoading}
-              className="flex-1 bg-primary text-[#0d1a12] py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 disabled:opacity-30 transition-all active:scale-[.98]"
+              className="flex-1 bg-primary text-[#17120E] py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 disabled:opacity-30 transition-all active:scale-[.98]"
             >
               Wear Today
             </button>
@@ -214,7 +214,7 @@ const DashboardView = ({ setView }) => {
               type="button"
               onClick={() => loadOutfit(true)}
               disabled={outfitLoading || !items.length}
-              className="px-3 py-2.5 border border-[#2a4032] text-slate-400 rounded-xl hover:bg-white/5 hover:text-white disabled:opacity-30 transition-all"
+              className="px-3 py-2.5 border border-[#43372A] text-slate-400 rounded-xl hover:bg-white/5 hover:text-white disabled:opacity-30 transition-all"
               title="Get a different outfit"
             >
               <RefreshCw size={15} className={outfitLoading ? 'animate-spin' : ''} />
@@ -222,7 +222,7 @@ const DashboardView = ({ setView }) => {
             <button
               type="button"
               onClick={() => setView('generator')}
-              className="flex-1 border border-[#2a4032] text-slate-300 py-2.5 rounded-xl text-sm font-medium hover:bg-white/5 hover:text-white transition-all"
+              className="flex-1 border border-[#43372A] text-slate-300 py-2.5 rounded-xl text-sm font-medium hover:bg-white/5 hover:text-white transition-all"
             >
               Customise
             </button>
@@ -238,7 +238,7 @@ const DashboardView = ({ setView }) => {
             { icon: 'calendar_today',title: 'Add events',        desc: 'Connect your schedule for smart picks'    },
             { icon: 'auto_awesome',  title: 'Generate outfits',  desc: 'Use the Style AI to build any look'       },
           ].map(({ icon, title, desc }) => (
-            <div key={title} className="bg-[#121f17] border border-[#1e2f22] rounded-xl p-4 hover:border-primary/20 transition-colors">
+            <div key={title} className="bg-[#1E1813] border border-[#33291F] rounded-xl p-4 hover:border-primary/20 transition-colors">
               <span className="material-symbols-outlined text-primary text-[22px] mb-2 block">{icon}</span>
               <h3 className="text-sm font-bold text-white mb-1">{title}</h3>
               <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
@@ -249,7 +249,7 @@ const DashboardView = ({ setView }) => {
 
       {/* ── Gap Analysis ──────────────────────── */}
       {gapAnalysis && items.length > 0 && (
-        <div className="bg-[#121f17] border border-primary/30 shadow-lg shadow-primary/5 rounded-2xl p-5 mt-6 flex gap-4 items-start">
+        <div className="bg-[#1E1813] border border-primary/30 shadow-lg shadow-primary/5 rounded-2xl p-5 mt-6 flex gap-4 items-start">
           <div className="size-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 text-primary mt-1">
              <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
           </div>

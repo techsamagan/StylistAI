@@ -155,6 +155,31 @@ class ShoppingItem(BaseModel):
         from_attributes = True
 
 
+class PaletteColor(BaseModel):
+    name: str
+    hex: str
+    role: Optional[str] = None  # signature | pop | neutral | base | accent | soft ...
+
+
+class ColorAxes(BaseModel):
+    undertone: float  # -1 cool .. +1 warm
+    depth: float      # -1 light .. +1 deep
+    clarity: float    # -1 muted .. +1 clear
+
+
+class ColorAnalysisResult(BaseModel):
+    id: Optional[int] = None
+    season: str
+    undertone: Optional[str] = None
+    description: Optional[str] = None
+    skin_hex: Optional[str] = None
+    selfie_url: Optional[str] = None
+    axes: Optional[ColorAxes] = None
+    palette: list[PaletteColor]
+    avoid: list[str] = []
+    created_at: Optional[str] = None
+
+
 class ShoppingTryOnRequest(BaseModel):
     item_id: int
     context: Optional[str] = "Casual"

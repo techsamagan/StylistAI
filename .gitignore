@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+/style_front/build/
+
+# Env / secrets
+.env
+.env.local
+
+# Local DB + uploads (runtime data)
+style_back/style.db
+style_back/uploads/
+
+# OS / editor
+.DS_Store
+*.swp
+
+# gstack runtime artifacts (local only)
+.gstack/

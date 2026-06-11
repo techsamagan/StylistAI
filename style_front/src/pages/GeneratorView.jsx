@@ -24,7 +24,7 @@ function getVibeInfo(v) {
 }
 
 const FORMALITY_COLORS = {
-  FORMAL:    'text-violet-400 bg-violet-400/10 border-violet-400/20',
+  FORMAL:    'text-stone-400 bg-stone-400/10 border-stone-400/20',
   MODERATE:  'text-primary bg-primary/10 border-primary/20',
   CASUAL:    'text-sky-400 bg-sky-400/10 border-sky-400/20',
   UNIVERSAL: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
@@ -129,7 +129,7 @@ const GeneratorView = () => {
           <p className="text-slate-500 text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
         </div>
         {weather && (
-          <div className="flex items-center gap-2 bg-[#121f17] border border-[#1e2f22] px-3 py-1.5 rounded-xl text-sm font-medium">
+          <div className="flex items-center gap-2 bg-[#1E1813] border border-[#33291F] px-3 py-1.5 rounded-xl text-sm font-medium">
             <span className="material-symbols-outlined text-[16px] text-primary">{weather.icon === 'clear_day' ? 'sunny' : 'cloudy'}</span>
             <span className="text-white">{weather.temp_c?.toFixed(0)}°C</span>
             <span className="text-slate-500 text-xs hidden sm:inline">— {weather.city?.split(',')[0]}</span>
@@ -157,7 +157,7 @@ const GeneratorView = () => {
                     className={`flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all duration-150 ${
                       active
                         ? 'border-primary bg-primary/8 shadow-lg shadow-primary/10'
-                        : 'border-[#1e2f22] bg-[#121f17] hover:border-[#2a4032] hover:bg-[#162118]'
+                        : 'border-[#33291F] bg-[#1E1813] hover:border-[#43372A] hover:bg-[#251D16]'
                     }`}
                   >
                     <span className={`material-symbols-outlined text-[22px] mb-2.5 ${active ? 'text-primary icon-filled' : 'text-slate-500'}`}>
@@ -187,7 +187,7 @@ const GeneratorView = () => {
                 <span className="text-xs text-slate-500 ml-1.5">— {vibeInfo.desc}</span>
               </div>
             </div>
-            <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl p-5">
+            <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-5">
               <div className="flex justify-between text-[10px] font-bold text-slate-600 uppercase tracking-wide mb-3">
                 <span>Comfort</span>
                 <span>Style</span>
@@ -231,7 +231,7 @@ const GeneratorView = () => {
           <button
             type="button"
             onClick={handleGenerate}
-            className="w-full flex items-center justify-center gap-2 bg-primary text-[#0d1a12] py-3.5 rounded-2xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20"
+            className="w-full flex items-center justify-center gap-2 bg-primary text-[#17120E] py-3.5 rounded-2xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
             Generate Outfit
@@ -243,7 +243,7 @@ const GeneratorView = () => {
       {step === 'loading' && (
         <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
           <div className="relative mb-6">
-            <div className="size-16 rounded-full border-2 border-[#1e2f22] flex items-center justify-center">
+            <div className="size-16 rounded-full border-2 border-[#33291F] flex items-center justify-center">
               <span className="material-symbols-outlined text-[28px] text-primary animate-pulse">auto_awesome</span>
             </div>
             <div className="absolute inset-0 rounded-full border-t-2 border-primary animate-spin-slow" />
@@ -266,7 +266,7 @@ const GeneratorView = () => {
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-[#1e2f22] hover:border-[#2a4032]"
+              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-[#33291F] hover:border-[#43372A]"
             >
               <span className="material-symbols-outlined text-[14px]">refresh</span>
               New Look
@@ -274,7 +274,7 @@ const GeneratorView = () => {
           </div>
 
           {/* Explanation */}
-          <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl p-4">
+          <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-4">
             <p className="text-sm text-slate-300 italic leading-relaxed border-l-2 border-primary/40 pl-3">
               &ldquo;{outfit.explanation}&rdquo;
             </p>
@@ -286,14 +286,14 @@ const GeneratorView = () => {
               {items.map((item, i) => (
                 <div
                   key={item.id}
-                  className="animate-fade-up bg-[#121f17] border border-[#1e2f22] rounded-2xl overflow-hidden hover:border-primary/20 transition-all"
+                  className="animate-fade-up bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden hover:border-primary/20 transition-all"
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <div className="aspect-[4/5] bg-[#0d1a12] flex items-center justify-center p-4">
+                  <div className="aspect-[4/5] bg-[#17120E] flex items-center justify-center p-4">
                     {item.image_url ? (
                       <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                     ) : (
-                      <span className="material-symbols-outlined text-[40px] text-[#1e2f22]">checkroom</span>
+                      <span className="material-symbols-outlined text-[40px] text-[#33291F]">checkroom</span>
                     )}
                   </div>
                   <div className="p-3">
@@ -313,7 +313,7 @@ const GeneratorView = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl p-8 text-center">
+            <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-8 text-center">
               <span className="material-symbols-outlined text-[36px] text-slate-600 block mb-2">checkroom</span>
               <p className="text-slate-500 text-sm">No items matched. Add more clothes to your closet.</p>
             </div>
@@ -321,8 +321,8 @@ const GeneratorView = () => {
 
           {/* Try On Image */}
           {tryOnImage && (
-            <div className="bg-[#121f17] border border-primary/30 p-2 rounded-2xl animate-fade-in mt-4">
-              <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#0d1a12]">
+            <div className="bg-[#1E1813] border border-primary/30 p-2 rounded-2xl animate-fade-in mt-4">
+              <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#17120E]">
                  <img src={tryOnImage} alt="Virtual Try-On" className="w-full h-full object-cover" />
                  <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
@@ -338,7 +338,7 @@ const GeneratorView = () => {
               type="button"
               onClick={handleSave}
               disabled={saving || !items.length}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#121f17] border border-[#1e2f22] text-white py-3 rounded-2xl font-bold text-sm hover:border-[#2a4032] disabled:opacity-40 transition-all active:scale-[.98]"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#1E1813] border border-[#33291F] text-white py-3 rounded-2xl font-bold text-sm hover:border-[#43372A] disabled:opacity-40 transition-all active:scale-[.98]"
             >
               <span className="material-symbols-outlined text-[16px]">{saving ? 'hourglass_top' : 'bookmark_add'}</span>
               {saving ? 'Saving…' : 'Save'}
@@ -347,7 +347,7 @@ const GeneratorView = () => {
               type="button"
               onClick={handleTryOn}
               disabled={tryOnLoading || !items.length}
-              className="flex-[2] flex items-center justify-center gap-2 bg-primary text-[#0d1a12] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
+              className="flex-[2] flex items-center justify-center gap-2 bg-primary text-[#17120E] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
             >
               {tryOnLoading ? (
                  <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
@@ -359,7 +359,7 @@ const GeneratorView = () => {
             <button
               type="button"
               onClick={handleGenerate}
-              className="px-4 py-3 border border-[#2a4032] text-slate-400 rounded-2xl hover:bg-white/5 hover:text-white transition-all"
+              className="px-4 py-3 border border-[#43372A] text-slate-400 rounded-2xl hover:bg-white/5 hover:text-white transition-all"
               title="Generate another"
             >
               <span className="material-symbols-outlined text-[16px]">refresh</span>

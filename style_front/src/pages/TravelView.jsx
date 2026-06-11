@@ -47,7 +47,7 @@ const TravelView = () => {
         
         {/* Controls */}
         <div className="md:col-span-1 space-y-4">
-          <form onSubmit={handleGenerate} className="bg-[#121f17] border border-[#1e2f22] p-5 rounded-2xl space-y-4">
+          <form onSubmit={handleGenerate} className="bg-[#1E1813] border border-[#33291F] p-5 rounded-2xl space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Destination</label>
               <input
@@ -55,14 +55,14 @@ const TravelView = () => {
                 value={destination}
                 onChange={e => setDestination(e.target.value)}
                 placeholder="e.g. Paris, Tokyo..."
-                className="w-full bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
                 required
               />
             </div>
             
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Duration (Days)</label>
-              <div className="flex items-center gap-3 bg-[#0d1a12] border border-[#1e2f22] rounded-xl px-3 py-1.5">
+              <div className="flex items-center gap-3 bg-[#17120E] border border-[#33291F] rounded-xl px-3 py-1.5">
                 <input
                   type="range"
                   min={1} max={14}
@@ -77,7 +77,7 @@ const TravelView = () => {
             <button
               type="submit"
               disabled={loading || !destination}
-              className="w-full mt-4 bg-primary text-[#0d1a12] py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10 flex justify-center items-center gap-2"
+              className="w-full mt-4 bg-primary text-[#17120E] py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10 flex justify-center items-center gap-2"
             >
               {loading ? (
                 <span className="material-symbols-outlined animate-spin">refresh</span>
@@ -98,14 +98,14 @@ const TravelView = () => {
         {/* Results */}
         <div className="md:col-span-2">
           {!result && !loading && (
-            <div className="bg-[#121f17] border border-[#1e2f22] border-dashed rounded-2xl p-10 flex flex-col items-center text-center h-full justify-center text-slate-500">
+            <div className="bg-[#1E1813] border border-[#33291F] border-dashed rounded-2xl p-10 flex flex-col items-center text-center h-full justify-center text-slate-500">
               <span className="material-symbols-outlined text-4xl mb-3 opacity-50">luggage</span>
               <p className="text-sm">Enter your destination to generate a smart packing itinerary.</p>
             </div>
           )}
 
           {loading && (
-            <div className="bg-[#121f17] border border-[#1e2f22] rounded-2xl p-10 flex flex-col items-center text-center h-full justify-center">
+            <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-10 flex flex-col items-center text-center h-full justify-center">
               <span className="material-symbols-outlined text-4xl mb-3 text-primary animate-bounce">cases</span>
               <p className="text-white font-bold">Analyzing your closet & weather...</p>
             </div>
@@ -122,12 +122,12 @@ const TravelView = () => {
               </div>
 
               <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-[#1e2f22] pb-2">Your Packing List ({result.packing_list?.length || 0} items)</h3>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-[#33291F] pb-2">Your Packing List ({result.packing_list?.length || 0} items)</h3>
                 {result.packing_list?.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {result.packing_list.map((item, idx) => (
-                      <div key={`pack-${idx}`} className="bg-[#121f17] border border-[#1e2f22] rounded-xl overflow-hidden text-center group relative">
-                        <div className="aspect-square bg-[#0d1a12] p-2 flex items-center justify-center">
+                      <div key={`pack-${idx}`} className="bg-[#1E1813] border border-[#33291F] rounded-xl overflow-hidden text-center group relative">
+                        <div className="aspect-square bg-[#17120E] p-2 flex items-center justify-center">
                           {item.image_url ? (
                             <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                           ) : (
@@ -149,17 +149,17 @@ const TravelView = () => {
               </div>
 
               <div>
-                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-[#1e2f22] pb-2">Daily Outfits</h3>
+                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-[#33291F] pb-2">Daily Outfits</h3>
                  <div className="space-y-3">
                    {result.daily_outfits?.map(day => (
-                     <div key={`day-${day.day}`} className="bg-[#121f17] border border-[#1e2f22] p-4 rounded-xl flex items-center gap-4 overflow-x-auto hide-scrollbar">
-                       <div className="flex-shrink-0 text-center pr-4 border-r border-[#1e2f22]">
+                     <div key={`day-${day.day}`} className="bg-[#1E1813] border border-[#33291F] p-4 rounded-xl flex items-center gap-4 overflow-x-auto hide-scrollbar">
+                       <div className="flex-shrink-0 text-center pr-4 border-r border-[#33291F]">
                          <span className="block text-[10px] text-slate-500 uppercase font-bold">Day</span>
                          <span className="block text-2xl font-black text-white">{day.day}</span>
                        </div>
                        <div className="flex gap-2 flex-1">
                           {day.items?.map((item, idx) => (
-                            <div key={`day-${day.day}-item-${idx}`} className="size-14 flex-shrink-0 bg-[#0d1a12] border border-[#1e2f22] rounded-lg p-1" title={item.name}>
+                            <div key={`day-${day.day}-item-${idx}`} className="size-14 flex-shrink-0 bg-[#17120E] border border-[#33291F] rounded-lg p-1" title={item.name}>
                               {item.image_url ? (
                                 <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                               ) : (
