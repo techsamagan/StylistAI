@@ -15,7 +15,7 @@ const CATEGORIES = [
 
 const FORMALITY_COLORS = {
   FORMAL:    'text-stone-400 bg-stone-400/10',
-  MODERATE:  'text-primary bg-primary/10',
+  MODERATE:  'text-gold-soft bg-primary/10',
   CASUAL:    'text-sky-400 bg-sky-400/10',
   UNIVERSAL: 'text-amber-400 bg-amber-400/10',
 };
@@ -35,7 +35,7 @@ function normalizeItem(item) {
 
 /* ── Skeleton card ────────────────────────── */
 const SkeletonCard = () => (
-  <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden">
+  <div className="bg-card border border-line rounded-2xl overflow-hidden">
     <div className="aspect-[4/5] skeleton" />
     <div className="p-4 space-y-2">
       <div className="skeleton h-3 w-2/3 rounded" />
@@ -46,8 +46,8 @@ const SkeletonCard = () => (
 
 /* ── Grid item card ───────────────────────── */
 const GridCard = ({ item, onEdit, onDelete, onWear }) => (
-  <div className="group relative flex flex-col bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
-    <div className="relative aspect-[4/5] bg-[#17120E] flex items-center justify-center p-5">
+  <div className="group relative flex flex-col bg-card border border-line rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+    <div className="relative aspect-[4/5] bg-canvas flex items-center justify-center p-5">
       {item.image ? (
         <img
           src={item.image}
@@ -55,7 +55,7 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
           className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
         />
       ) : (
-        <span className="material-symbols-outlined text-[48px] text-[#33291F]">checkroom</span>
+        <span className="material-symbols-outlined text-[48px] text-line">checkroom</span>
       )}
 
       {/* Hover overlay */}
@@ -63,21 +63,21 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
         <button
           type="button"
           onClick={() => onWear(item)}
-          className="bg-primary text-[#17120E] font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors"
+          className="bg-primary text-[#1F2937] font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors"
         >
           Wear
         </button>
         <button
           type="button"
           onClick={() => onEdit(item)}
-          className="bg-white/10 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors backdrop-blur-sm"
+          className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-white/25 transition-colors backdrop-blur-sm"
         >
           Edit
         </button>
         <button
           type="button"
           onClick={() => onDelete(item)}
-          className="bg-[#9B4A3D]/25 text-[#CF8675] text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#9B4A3D]/35 transition-colors"
+          className="bg-error/25 text-error text-xs px-2.5 py-1.5 rounded-lg hover:bg-error/35 transition-colors"
         >
           <span className="material-symbols-outlined text-[14px]">delete</span>
         </button>
@@ -90,19 +90,19 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
     </div>
 
     <div className="p-3.5">
-      <h3 className="font-bold text-sm text-white truncate mb-1.5">{item.name}</h3>
+      <h3 className="font-bold text-sm text-fg truncate mb-1.5">{item.name}</h3>
       <div className="flex items-center justify-between">
         {item.formality && (
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${FORMALITY_COLORS[item.formality] || 'text-slate-400 bg-slate-800'}`}>
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${FORMALITY_COLORS[item.formality] || 'text-muted bg-field'}`}>
             {item.formality}
           </span>
         )}
         {item.color && (
-          <span className="text-[9px] text-slate-500 capitalize">{item.color}</span>
+          <span className="text-[9px] text-subtle capitalize">{item.color}</span>
         )}
       </div>
       {item.formalityValue !== undefined && (
-        <div className="mt-2.5 h-0.5 w-full bg-[#33291F] rounded-full overflow-hidden">
+        <div className="mt-2.5 h-0.5 w-full bg-line rounded-full overflow-hidden">
           <div className="h-full bg-primary/60 rounded-full" style={{ width: `${item.formalityValue}%` }} />
         </div>
       )}
@@ -112,41 +112,41 @@ const GridCard = ({ item, onEdit, onDelete, onWear }) => (
 
 /* ── List item row ────────────────────────── */
 const ListRow = ({ item, onEdit, onDelete, onWear }) => (
-  <div className="group flex items-center gap-4 bg-[#1E1813] border border-[#33291F] rounded-xl p-3 hover:border-primary/20 hover:bg-[#251D16] transition-all duration-200">
-    <div className="size-14 flex-shrink-0 bg-[#17120E] rounded-lg overflow-hidden flex items-center justify-center border border-[#33291F]">
+  <div className="group flex items-center gap-4 bg-card border border-line rounded-xl p-3 hover:border-primary/20 hover:bg-field transition-all duration-200">
+    <div className="size-14 flex-shrink-0 bg-canvas rounded-lg overflow-hidden flex items-center justify-center border border-line">
       {item.image
         ? <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
-        : <span className="material-symbols-outlined text-[22px] text-[#33291F]">checkroom</span>
+        : <span className="material-symbols-outlined text-[22px] text-line">checkroom</span>
       }
     </div>
 
     <div className="flex-1 min-w-0">
       <div className="flex items-center gap-2 mb-0.5">
-        <h3 className="font-bold text-sm text-white truncate">{item.name}</h3>
+        <h3 className="font-bold text-sm text-fg truncate">{item.name}</h3>
         {item.formality && (
-          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase flex-shrink-0 ${FORMALITY_COLORS[item.formality] || 'text-slate-400 bg-slate-800'}`}>
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase flex-shrink-0 ${FORMALITY_COLORS[item.formality] || 'text-muted bg-field'}`}>
             {item.formality}
           </span>
         )}
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-slate-600 uppercase tracking-wide">{item.tag}</span>
-        {item.color && <span className="text-[10px] text-slate-600">· {item.color}</span>}
+        <span className="text-[10px] text-subtle uppercase tracking-wide">{item.tag}</span>
+        {item.color && <span className="text-[10px] text-subtle">· {item.color}</span>}
       </div>
     </div>
 
-    <div className="w-20 h-1 bg-[#33291F] rounded-full overflow-hidden flex-shrink-0 hidden sm:block">
+    <div className="w-20 h-1 bg-line rounded-full overflow-hidden flex-shrink-0 hidden sm:block">
       <div className="h-full bg-primary/50 rounded-full" style={{ width: `${item.formalityValue ?? 50}%` }} />
     </div>
 
     <div className="flex-shrink-0 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-      <button type="button" onClick={() => onWear(item)} className="bg-primary/10 text-primary px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-primary/20 transition-colors">
+      <button type="button" onClick={() => onWear(item)} className="bg-primary/10 text-gold-soft px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-primary/20 transition-colors">
         Wear
       </button>
-      <button type="button" onClick={() => onEdit(item)} className="bg-white/5 text-slate-300 px-2.5 py-1 rounded-lg text-xs hover:bg-white/10 transition-colors">
+      <button type="button" onClick={() => onEdit(item)} className="bg-fg/[0.04] text-muted px-2.5 py-1 rounded-lg text-xs hover:bg-fg/[0.06] transition-colors">
         Edit
       </button>
-      <button type="button" onClick={() => onDelete(item)} className="bg-[#9B4A3D]/12 text-[#CF8675] p-1 rounded-lg hover:bg-[#9B4A3D]/25 transition-colors">
+      <button type="button" onClick={() => onDelete(item)} className="bg-error/12 text-error p-1 rounded-lg hover:bg-error/25 transition-colors">
         <span className="material-symbols-outlined text-[13px]">delete</span>
       </button>
     </div>
@@ -218,8 +218,8 @@ const WardrobeView = () => {
       {/* ── Top header ──────────────────── */}
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h1 className="text-3xl font-serif font-light text-white tracking-tight">My Closet</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
+          <h1 className="text-3xl font-serif font-light text-fg tracking-tight">My Closet</h1>
+          <p className="text-subtle text-sm mt-0.5">
             {loading ? 'Loading…' : `${items.length} item${items.length !== 1 ? 's' : ''}`}
           </p>
         </div>
@@ -227,29 +227,29 @@ const WardrobeView = () => {
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* Search */}
           <div className="relative hidden sm:flex items-center">
-            <span className="material-symbols-outlined absolute left-2.5 text-slate-600 text-[16px]">search</span>
+            <span className="material-symbols-outlined absolute left-2.5 text-subtle text-[16px]">search</span>
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search…"
-              className="bg-[#1E1813] border border-[#33291F] rounded-xl py-2 pl-8 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40 w-44 transition-all focus:w-52"
+              className="bg-card border border-line rounded-xl py-2 pl-8 pr-3 text-sm text-fg placeholder-subtle focus:outline-none focus:border-primary/40 w-44 transition-all focus:w-52"
             />
           </div>
 
           {/* View toggle */}
-          <div className="flex items-center bg-[#1E1813] border border-[#33291F] rounded-xl p-0.5">
+          <div className="flex items-center bg-card border border-line rounded-xl p-0.5">
             <button
               type="button"
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-fg/[0.06] text-fg' : 'text-subtle hover:text-muted'}`}
             >
               <span className="material-symbols-outlined text-[18px]">grid_view</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-fg/[0.06] text-fg' : 'text-subtle hover:text-muted'}`}
             >
               <span className="material-symbols-outlined text-[18px]">view_list</span>
             </button>
@@ -266,8 +266,8 @@ const WardrobeView = () => {
             onClick={() => setCategory(id)}
             className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-150 ${
               category === id
-                ? 'bg-primary text-[#17120E] shadow-lg shadow-primary/20'
-                : 'bg-[#1E1813] border border-[#33291F] text-slate-400 hover:text-white hover:border-[#43372A]'
+                ? 'bg-primary text-[#1F2937] shadow-lg shadow-primary/20'
+                : 'bg-card border border-line text-muted hover:text-fg hover:border-line-strong'
             }`}
           >
             {label}
@@ -277,13 +277,13 @@ const WardrobeView = () => {
 
       {/* ── Mobile search ───────────────── */}
       <div className="relative flex items-center sm:hidden mb-4">
-        <span className="material-symbols-outlined absolute left-3 text-slate-600 text-[16px]">search</span>
+        <span className="material-symbols-outlined absolute left-3 text-subtle text-[16px]">search</span>
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search items…"
-          className="w-full bg-[#1E1813] border border-[#33291F] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary/40"
+          className="w-full bg-card border border-line rounded-xl py-2.5 pl-9 pr-3 text-sm text-fg placeholder-subtle focus:outline-none focus:border-primary/40"
         />
       </div>
 
@@ -303,13 +303,13 @@ const WardrobeView = () => {
       ) : items.length === 0 ? (
         /* ── Empty state ─────────────────── */
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="size-20 rounded-full bg-[#1E1813] border border-[#33291F] flex items-center justify-center mb-5">
-            <span className="material-symbols-outlined text-[36px] text-slate-600">checkroom</span>
+          <div className="size-20 rounded-full bg-card border border-line flex items-center justify-center mb-5">
+            <span className="material-symbols-outlined text-[36px] text-subtle">checkroom</span>
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">
+          <h3 className="text-xl font-bold text-fg mb-2">
             {search || category !== 'all' ? 'No items found' : 'Your closet is empty'}
           </h3>
-          <p className="text-slate-500 text-sm mb-6 max-w-xs">
+          <p className="text-subtle text-sm mb-6 max-w-xs">
             {search || category !== 'all'
               ? 'Try a different search or category.'
               : 'Upload photos of your clothes to get started. The AI will suggest outfits once you have items.'}
@@ -318,7 +318,7 @@ const WardrobeView = () => {
             <button
               type="button"
               onClick={() => setShowAdd(true)}
-              className="flex items-center gap-2 bg-primary text-[#17120E] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all active:scale-[.98] shadow-lg shadow-primary/20"
+              className="flex items-center gap-2 bg-primary text-[#1F2937] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all active:scale-[.98] shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined text-[18px]">upload</span>
               Upload your first item
@@ -341,10 +341,10 @@ const WardrobeView = () => {
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            className="group flex flex-col items-center justify-center min-h-[200px] bg-[#1E1813] border-2 border-dashed border-[#33291F] rounded-2xl hover:border-primary/30 hover:bg-[#251D16] transition-all cursor-pointer"
+            className="group flex flex-col items-center justify-center min-h-[200px] bg-card border-2 border-dashed border-line rounded-2xl hover:border-primary/30 hover:bg-field transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[32px] text-slate-700 group-hover:text-primary transition-colors mb-2">add_circle</span>
-            <span className="text-xs font-bold text-slate-600 group-hover:text-slate-400 transition-colors">Add Item</span>
+            <span className="material-symbols-outlined text-[32px] text-subtle group-hover:text-gold-soft transition-colors mb-2">add_circle</span>
+            <span className="text-xs font-bold text-subtle group-hover:text-muted transition-colors">Add Item</span>
           </button>
         </div>
       ) : (
@@ -362,12 +362,12 @@ const WardrobeView = () => {
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            className="group w-full flex items-center gap-4 bg-[#1E1813] border-2 border-dashed border-[#33291F] rounded-xl p-3 hover:border-primary/30 transition-all cursor-pointer"
+            className="group w-full flex items-center gap-4 bg-card border-2 border-dashed border-line rounded-xl p-3 hover:border-primary/30 transition-all cursor-pointer"
           >
-            <div className="size-14 flex-shrink-0 bg-[#17120E] rounded-lg flex items-center justify-center border border-[#33291F] group-hover:border-primary/20">
-              <span className="material-symbols-outlined text-[22px] text-slate-600 group-hover:text-primary transition-colors">add</span>
+            <div className="size-14 flex-shrink-0 bg-canvas rounded-lg flex items-center justify-center border border-line group-hover:border-primary/20">
+              <span className="material-symbols-outlined text-[22px] text-subtle group-hover:text-gold-soft transition-colors">add</span>
             </div>
-            <span className="text-sm font-medium text-slate-600 group-hover:text-slate-400 transition-colors">Add new item to closet</span>
+            <span className="text-sm font-medium text-subtle group-hover:text-muted transition-colors">Add new item to closet</span>
           </button>
         </div>
       )}

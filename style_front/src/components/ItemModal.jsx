@@ -76,8 +76,8 @@ const ItemModal = ({ item, onClose, onSaved }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <h2 className="text-xl font-bold text-white mb-6">
+      <div className="bg-card border border-line rounded-2xl shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <h2 className="text-xl font-bold text-fg mb-6">
           {isEdit ? 'Edit Item' : 'Add New Item'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -87,8 +87,8 @@ const ItemModal = ({ item, onClose, onSaved }) => {
               type="text"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Navy Blazer"
-              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              placeholder="e.g. Silk Blouse"
+              className="w-full bg-field border border-line rounded-xl py-2.5 px-3 text-fg placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -97,7 +97,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
             <select
               value={form.category}
               onChange={e => setForm({ ...form, category: e.target.value })}
-              className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full bg-field border border-line rounded-xl py-2.5 px-3 text-fg focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -107,13 +107,13 @@ const ItemModal = ({ item, onClose, onSaved }) => {
             <div>
               <label className="block text-sm font-medium text-clay mb-1">Photo</label>
               <div
-                className="relative border-2 border-dashed border-[#43372A] rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                className="relative border-2 border-dashed border-line-strong rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-colors"
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={e => e.preventDefault()}
                 onDrop={handleDrop}
               >
                 {imagePreview ? (
-                  <div className="relative h-40 bg-[#251D16] flex items-center justify-center">
+                  <div className="relative h-40 bg-field flex items-center justify-center">
                     <img src={imagePreview} alt="preview" className="h-full w-full object-contain p-2" />
                     <button
                       type="button"
@@ -138,7 +138,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
                     value={form.image_url}
                     onChange={e => { setForm({ ...form, image_url: e.target.value }); if (e.target.value) setImagePreview(e.target.value); }}
                     placeholder="Or paste image URL…"
-                    className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2 px-3 text-white placeholder:text-clay/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full bg-field border border-line rounded-xl py-2 px-3 text-fg placeholder:text-clay/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>
               )}
@@ -153,7 +153,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
                 value={form.image_url}
                 onChange={e => setForm({ ...form, image_url: e.target.value })}
                 placeholder="https://…"
-                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-field border border-line rounded-xl py-2.5 px-3 text-fg placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           )}
@@ -166,7 +166,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
                 value={form.color}
                 onChange={e => setForm({ ...form, color: e.target.value })}
                 placeholder="e.g. navy, black"
-                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-field border border-line rounded-xl py-2.5 px-3 text-fg placeholder:text-clay/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
             <div>
@@ -174,7 +174,7 @@ const ItemModal = ({ item, onClose, onSaved }) => {
               <select
                 value={form.formality}
                 onChange={e => setForm({ ...form, formality: e.target.value })}
-                className="w-full bg-[#251D16] border border-[#33291F] rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full bg-field border border-line rounded-xl py-2.5 px-3 text-fg focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {['CASUAL', 'MODERATE', 'FORMAL', 'UNIVERSAL'].map(f => (
                   <option key={f} value={f}>{f}</option>
@@ -183,13 +183,13 @@ const ItemModal = ({ item, onClose, onSaved }) => {
             </div>
           </div>
 
-          {error && <p className="text-[#CF8675] text-sm">{error}</p>}
+          {error && <p className="text-error text-sm">{error}</p>}
 
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-[#33291F] text-clay py-3 rounded-xl font-medium hover:bg-white/5 transition-colors"
+              className="flex-1 border border-line text-clay py-3 rounded-xl font-medium hover:bg-fg/[0.04] transition-colors"
             >
               Cancel
             </button>

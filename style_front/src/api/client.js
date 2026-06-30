@@ -67,9 +67,11 @@ export const api = {
       body: JSON.stringify({ name, email, password, city }),
     }).then(res => {
       if (res?.access_token) {
+        // New identity: drop any cached per-user data from a prior account first.
+        localStorage.removeItem('user_avatar');
         localStorage.setItem('auth_token', res.access_token);
-        if (res.city) localStorage.setItem('user_city', res.city);
-        if (res.name) localStorage.setItem('user_name', res.name);
+        localStorage.setItem('user_city', res.city || '');
+        localStorage.setItem('user_name', res.name || '');
       }
       return res;
     });
@@ -81,9 +83,11 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }).then(res => {
       if (res?.access_token) {
+        // New identity: drop any cached per-user data from a prior account first.
+        localStorage.removeItem('user_avatar');
         localStorage.setItem('auth_token', res.access_token);
-        if (res.city) localStorage.setItem('user_city', res.city);
-        if (res.name) localStorage.setItem('user_name', res.name);
+        localStorage.setItem('user_city', res.city || '');
+        localStorage.setItem('user_name', res.name || '');
       }
       return res;
     });

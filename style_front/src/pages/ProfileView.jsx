@@ -112,7 +112,7 @@ const ProfileView = ({ onLogout }) => {
   if (initialLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
-        <span className="material-symbols-outlined text-[40px] text-primary animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[40px] text-gold-soft animate-spin">refresh</span>
       </div>
     );
   }
@@ -120,74 +120,74 @@ const ProfileView = ({ onLogout }) => {
   return (
     <div className="animate-fade-up max-w-2xl mx-auto">
       <div className="mb-7">
-        <h1 className="text-3xl font-serif font-light text-white tracking-tight">My Profile</h1>
-        <p className="text-slate-500 text-sm mt-1">Manage your account settings and preferences.</p>
+        <h1 className="text-3xl font-serif font-light text-fg tracking-tight">My Profile</h1>
+        <p className="text-subtle text-sm mt-1">Manage your account settings and preferences.</p>
       </div>
 
-      <div className="bg-[#1E1813] border border-[#33291F] p-6 rounded-2xl">
+      <div className="bg-card border border-line p-6 rounded-2xl">
         {error && (
-          <div className="mb-6 bg-[#9B4A3D]/12 border border-[#9B4A3D]/30 text-[#D69685] text-sm px-4 py-3 rounded-xl">
+          <div className="mb-6 bg-error/12 border border-error/30 text-error text-sm px-4 py-3 rounded-xl">
             {error}
           </div>
         )}
 
         <form onSubmit={handleUpdate} className="space-y-5">
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Full Name</label>
+            <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Full Name</label>
             <input
               type="text"
               name="name"
               value={profile.name}
               onChange={handleChange}
               placeholder="Your name"
-              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">City (For Weather Updates)</label>
+            <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">City (For Weather Updates)</label>
             <input
               type="text"
               name="city"
               value={profile.city}
               onChange={handleChange}
               placeholder="e.g. London"
-              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
             />
-            <p className="text-[10px] text-slate-500 mt-1.5 ml-1">Used to provide accurate weather-based outfit suggestions.</p>
+            <p className="text-[10px] text-subtle mt-1.5 ml-1">Used to provide accurate weather-based outfit suggestions.</p>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
+            <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Email Address</label>
             <input
               type="email"
               name="email"
               value={profile.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">New Password</label>
+            <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">New Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Leave blank to keep current password"
-              className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
           {/* ── Body Measurements ─────────────────────────────────────── */}
-          <div className="pt-4 border-t border-[#33291F]">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Body Measurements</p>
-            <p className="text-[10px] text-slate-600 mb-3">Used to personalize virtual try-on results.</p>
+          <div className="pt-4 border-t border-line">
+            <p className="text-xs font-bold text-muted uppercase tracking-widest mb-0.5">Body Measurements</p>
+            <p className="text-[10px] text-subtle mb-3">Used to personalize virtual try-on results.</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Height (cm)</label>
+                <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Height (cm)</label>
                 <input
                   type="number"
                   name="height_cm"
@@ -196,11 +196,11 @@ const ProfileView = ({ onLogout }) => {
                   placeholder="e.g. 175"
                   min={100}
                   max={250}
-                  className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Weight (kg)</label>
+                <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Weight (kg)</label>
                 <input
                   type="number"
                   name="weight_kg"
@@ -209,17 +209,17 @@ const ProfileView = ({ onLogout }) => {
                   placeholder="e.g. 70"
                   min={30}
                   max={300}
-                  className="w-full bg-[#17120E] border border-[#33291F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-canvas border border-line rounded-xl px-4 py-3 text-sm text-fg focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#33291F] flex justify-end">
+          <div className="pt-4 border-t border-line flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 bg-primary text-[#17120E] px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10"
+              className="flex items-center gap-2 bg-primary text-[#1F2937] px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/10"
             >
               {loading ? (
                 <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
@@ -233,9 +233,9 @@ const ProfileView = ({ onLogout }) => {
       </div>
 
       {/* ── Your Photo (avatar for try-on) ─────────────────────────────── */}
-      <div className="mt-6 bg-[#1E1813] border border-[#33291F] p-6 rounded-2xl">
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Your Photo</p>
-        <p className="text-[10px] text-slate-600 mb-4">Used for advanced AI virtual try-on in the Shop. PNG or JPG, max 5 MB.</p>
+      <div className="mt-6 bg-card border border-line p-6 rounded-2xl">
+        <p className="text-xs font-bold text-muted uppercase tracking-widest mb-0.5">Your Photo</p>
+        <p className="text-[10px] text-subtle mb-4">Used for advanced AI virtual try-on in the Shop. PNG or JPG, max 5 MB.</p>
 
         <div className="flex items-center gap-5">
           {/* Avatar preview */}
@@ -247,8 +247,8 @@ const ProfileView = ({ onLogout }) => {
                 className="size-20 rounded-full object-cover border-2 border-primary/30"
               />
             ) : (
-              <div className="size-20 rounded-full bg-[#17120E] border-2 border-dashed border-[#33291F] flex items-center justify-center">
-                <span className="material-symbols-outlined text-[28px] text-slate-600">person</span>
+              <div className="size-20 rounded-full bg-canvas border-2 border-dashed border-line flex items-center justify-center">
+                <span className="material-symbols-outlined text-[28px] text-subtle">person</span>
               </div>
             )}
           </div>
@@ -265,7 +265,7 @@ const ProfileView = ({ onLogout }) => {
             />
             <label
               htmlFor="avatar-upload"
-              className={`inline-flex items-center gap-2 cursor-pointer bg-[#17120E] border border-[#33291F] text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:border-[#43372A] transition-all ${avatarUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center gap-2 cursor-pointer bg-canvas border border-line text-fg px-4 py-2.5 rounded-xl text-sm font-bold hover:border-line-strong transition-all ${avatarUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {avatarUploading ? (
                 <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
@@ -275,7 +275,7 @@ const ProfileView = ({ onLogout }) => {
               {avatarUploading ? 'Uploading…' : avatarUrl ? 'Change Photo' : 'Upload Photo'}
             </label>
             {avatarUrl && (
-              <p className="text-[10px] text-primary mt-2 flex items-center gap-1">
+              <p className="text-[10px] text-gold-soft mt-2 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[12px]">check_circle</span>
                 Photo saved — try-on will use your appearance
               </p>
@@ -289,7 +289,7 @@ const ProfileView = ({ onLogout }) => {
         <button
           type="button"
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 bg-[#9B4A3D]/10 border border-[#9B4A3D]/30 text-[#CF8675] hover:bg-[#9B4A3D] hover:text-white hover:border-[#9B4A3D] py-3 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[.98]"
+          className="w-full flex items-center justify-center gap-2 bg-error/10 border border-error/30 text-error hover:bg-error hover:text-fg hover:border-error py-3 rounded-2xl font-semibold text-sm transition-all duration-200 active:scale-[.98]"
         >
           <span className="material-symbols-outlined text-[18px]">logout</span>
           Sign Out

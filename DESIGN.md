@@ -1,49 +1,55 @@
-# Design System — ASANUR
+# Design System — FitCheck AI
 
-> ASANUR is always stylized in all-caps.
-> **Memorable thing:** an exclusive, understated fashion house where the interface disappears and the clothing is the hero. Every decision below serves that.
+> Brand name: **FitCheck AI** (the "AI" suffix is set in gold). Tagline: *"Your Personal AI Fashion Stylist."*
+> **Memorable thing:** an elegant luxury-fashion house — soft ivory canvas, gold accents, editorial serif headlines — that feels like Zara / COS / Massimo Dutti. The interface is calm and premium; the clothing and the gold accent are the heroes.
+> **Themes:** ships in **light** (ivory + gold, default) and **dark** (espresso + gold), toggled app-wide. Both use the same semantic tokens (see Color).
 
 ## Product Context
 - **What this is:** An AI personal-styling and wardrobe assistant — digital closet, context-aware outfit generation, travel packing, shopping, and selfie-based color-season analysis.
-- **Who it's for:** Style-conscious people who want a premium, considered styling experience, not a utility.
+- **Who it's for:** Style-conscious **women** who want a premium, considered styling experience, not a utility. Copy, demo wardrobes, and imagery are written for a female audience.
 - **Space/industry:** Luxury fashion × consumer AI. Peers in *feel*: The Row, Aesop, COS, SSENSE, Jacquemus, Net-a-Porter.
 - **Project type:** Hybrid — marketing surface (landing, color-season reveal) + web app (wardrobe, generator, shopping, profile). React + Tailwind CSS.
 
 ## Aesthetic Direction
-- **Direction:** Quiet-luxury editorial minimalism.
-- **Decoration level:** Minimal. Hairline 1px rules instead of bordered/shadowed cards; no gradients; no decorative blobs. Texture comes from a warm paper-like canvas and full-bleed garment photography.
-- **Mood:** Calm, warm, restrained, expensive. The UI recedes so garment color is always the loudest thing on screen.
-- **Reference sites:** therow.com (canonical), aesop.com, cos.com.
+- **Direction:** Luxury Fashion — minimal, elegant, lots of white space, large high-quality photography, soft shadows, rounded cards, smooth animation.
+- **Decoration level:** Light. Soft shadows + rounded cards (not hard hairline-only). Gold is the single accent; no neon, no loud gradients.
+- **Mood:** Premium, refined, feminine, "old money." Calm ivory canvas, gold details, editorial serif headlines.
+- **Imagery:** Female luxury fashion — models in old-money / classic styling (tailored coats, white shirts, trench, gold jewelry). No menswear on the marketing surface.
+- **Reference brands:** Zara, COS, Massimo Dutti (feel); The Row / Net-a-Porter (polish).
 
 ## Typography
 Two families only. Load from Google Fonts.
 
-- **Display/Hero + ASANUR wordmark:** **Fraunces** (variable, optical sizing, high-contrast old-style serif). Weight 330–360 for headlines. Wordmark = all-caps, `letter-spacing` ~0.34–0.5em, with a thin champagne hairline rule beneath.
-- **Body / UI / Labels:** **Instrument Sans** (clean humanist grotesque).
-- **Data / Tables (prices, sizes, metrics):** Instrument Sans with `font-variant-numeric: tabular-nums`.
-- **Code:** n/a (no code surfaces). Use JetBrains Mono only if ever needed.
-- **Do NOT use:** Inter, Roboto, Space Grotesk, Montserrat, Poppins, system-ui as display/body (convergence/slop signals).
+- **Display / Hero + wordmark (`font-serif`):** **Playfair Display** (high-contrast editorial serif). Light/regular weights for big headlines; italic for accent lines (often in gold).
+- **Body / UI / Labels (`font-display` / `font-sans`):** **Poppins** (geometric humanist sans).
+- **Data (prices, sizes, metrics):** Poppins with `font-variant-numeric: tabular-nums`.
 - **Loading:**
   ```html
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300&family=Instrument+Sans:ital,wght@0,400..600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   ```
-- **Scale (px):** hero clamp(44, 11vw, 128) · h1 46 · h2 34 · h3 26 · lead 16 · body 15.5 · ui 13 · label 11 (tracking .2–.3em uppercase). Headlines `letter-spacing: -.015em`.
+- **Scale (px):** hero clamp(44, 11vw, 112) · h1 46 · h2 34 · h3 26 · lead 16 · body 15.5 · ui 13 · label 11 (tracking .2–.3em uppercase, often gold).
 
 ## Color
-- **Approach:** Restrained / near-monochrome. Color is rare and meaningful; the garments provide the saturation.
+- **Approach:** Soft ivory canvas, charcoal text, a single **luxury gold** accent. Color is defined as **CSS-variable semantic tokens** (`src/index.css` `:root` = light, `.dark` = dark) wired to Tailwind in `tailwind.config.js`. Use the token classes (`bg-canvas`, `text-fg`, `bg-primary`, …) — not raw hex — so both themes adapt automatically.
 
-| Token | Hex | Usage |
-|---|---|---|
-| `ink` | `#16140F` | warm near-black — primary text, dark sections, primary button fill |
-| `bone` | `#F6F3EC` | warm off-white — primary canvas |
-| `porcelain` | `#FCFBF7` | lighter surface / panels |
-| `stone` | `#E4DDD1` | hairline borders, dividers |
-| `clay` | `#8C8175` | muted secondary text |
-| `champagne` | `#B7A98F` | the single accent — active nav tick, selected state, wordmark rule. Target ~1% of surface |
+| Token (class) | Light | Dark | Usage |
+|---|---|---|---|
+| `canvas` | `#F8F6F2` | `#17120E` | app background (ivory / espresso) |
+| `card` | `#FFFFFF` | `#1E1813` | raised surfaces / cards |
+| `field` | `#F4F1EB` | `#251D16` | inputs / sunken panels |
+| `line` | `#E5E7EB` | `#33291F` | hairline borders |
+| `line-strong` | `#D8D2C7` | `#43372A` | stronger borders |
+| `fg` | `#1F2937` | `#F6F3EC` | primary text |
+| `muted` | `#6B7280` | warm gray | secondary text |
+| `subtle` | `#9CA3AF` | faint warm gray | tertiary / faint text |
+| `gold` / `primary` | `#D4AF37` | `#D4AF37` | **luxury gold** — button fills, active state, borders, tints |
+| `primary-dark` | `#C39A28` | `#C39A28` | gold hover / pressed |
+| `gold-soft` | `#8A6A1C` | `#E3C766` | readable gold for **text** labels (deep on light, light on dark) |
 
-- **Semantic (desaturated to fit):** success `#5C6B52` · warning `#B08643` · error `#9B4A3D` · info `#5E6B73`.
-- **Dark mode:** Espresso, not pure black. `bg #1B1814`, `surface #211D18`, text `bone`, line `#332D25`, accent lifted to `#C7B89C`. Reduce saturation ~15%.
-- **Rule:** Primary CTA is `ink` on `bone` (or `bone` on `ink` in dark) — never a colored button. The brass accent never fills a large area.
+- **Fixed (never theme):** `charcoal #1F2937` is the dark text that always sits on gold fills (so gold buttons read in both modes). `clay #8C8175` muted warm neutral; `champagne #B7A98F` legacy accent / avatar dots.
+- **Semantic:** success `#22C55E` · error `#EF4444`.
+- **Gold rule:** gold is a **fill / border / tint** color and `gold-soft` is the only gold used as **text** (raw `#D4AF37` text fails contrast on ivory). Primary CTA = `bg-primary` (gold) with `charcoal` text. Keep gold purposeful and refined, never neon.
+- **Light/dark text on images:** text over garment photos / `bg-black/*` scrims stays literal `text-white`; everywhere else uses `text-fg`.
 
 ## Spacing
 - **Base unit:** 8px (4px half-step).
@@ -76,3 +82,5 @@ The headline feature is an **editorial spread, not a dashboard card**: season na
 | Date | Decision | Rationale |
 |------|----------|-----------|
 | 2026-06-11 | Initial design system created | /design-consultation. Quiet-luxury chosen for "neutral UI that never clashes with clothing"; grounded in The Row + 2026 quiet-luxury research. Fonts: Fraunces + Instrument Sans. Near-monochrome warm-neutral palette, brass accent ~1%. |
+| 2026-06-29 | Rebrand to **FitCheck** (frontend) + baby-yellow primary `#FCE7A0` + female audience focus | User direction. Primary accent moved from champagne to soft baby yellow; product positioning, demo wardrobes, and copy refocused for women. |
+| 2026-06-29 | **Luxury Fashion** redesign → **FitCheck AI** | User design guide. New light theme (ivory `#F8F6F2` + luxury gold `#D4AF37`), Playfair Display + Poppins, soft shadows / rounded cards. Espresso kept as the **dark** theme via app-wide toggle (`ThemeToggle`, `.dark` class, `style-dark-mode` key). All dark hex literals swept to CSS-variable semantic tokens. Landing imagery set to female old-money luxury models. |

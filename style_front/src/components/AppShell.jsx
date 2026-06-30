@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useClosetFilters } from '../context/ClosetFilterContext';
 import { api, isApiConfigured } from '../api/client';
 import ItemModal from './ItemModal';
+import ThemeToggle from './ThemeToggle';
 
 const NAV = [
   { id: 'dashboard', label: 'Dashboard', icon: 'home'          },
@@ -44,18 +45,18 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-[#17120E] text-white font-display">
+    <div className="min-h-screen flex bg-canvas text-fg font-display">
 
       {/* ── Desktop Sidebar ─────────────────────────── */}
-      <aside className="hidden md:flex flex-col w-56 flex-shrink-0 border-r border-[#33291F] sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-56 flex-shrink-0 border-r border-line sticky top-0 h-screen">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-[#33291F]">
-          <div className="size-8 bg-primary rounded-xl flex items-center justify-center text-[#17120E]">
+        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-line">
+          <div className="size-8 bg-primary rounded-xl flex items-center justify-center text-[#1F2937]">
             <span className="material-symbols-outlined icon-filled text-[18px]">checkroom</span>
           </div>
           <div>
-            <span className="block font-serif text-base tracking-[0.18em] uppercase leading-none">ASANUR</span>
-            <span className="block text-[9px] tracking-[0.22em] uppercase text-clay mt-1">AI Atelier</span>
+            <span className="block font-serif text-base tracking-[0.12em] leading-none">FitCheck <span className="text-gold">AI</span></span>
+            <span className="block text-[9px] tracking-[0.22em] uppercase text-clay mt-1">Personal Stylist</span>
           </div>
         </div>
 
@@ -70,8 +71,8 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
                 onClick={() => setActiveTab(id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
                   active
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-slate-500 hover:text-white hover:bg-white/5'
+                    ? 'bg-primary/10 text-gold-soft'
+                    : 'text-subtle hover:text-fg hover:bg-fg/[0.04]'
                 }`}
               >
                 <span className={`material-symbols-outlined text-[18px] transition-all ${active ? 'icon-filled' : 'group-hover:scale-110'}`}>{icon}</span>
@@ -87,7 +88,7 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="w-full flex items-center justify-center gap-2 bg-primary text-[#17120E] py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 active:scale-[.98] transition-all shadow-lg shadow-primary/15"
+            className="w-full flex items-center justify-center gap-2 bg-primary text-[#1F2937] py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 active:scale-[.98] transition-all shadow-lg shadow-primary/15"
           >
             <span className="material-symbols-outlined text-[17px]">add</span>
             Add Item
@@ -97,22 +98,23 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
         {/* AI suggestion strip */}
         {suggestion?.reason && (
           <div className="mx-3 mb-3 p-3 rounded-xl bg-primary/5 border border-primary/15">
-            <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">AI Pick</p>
-            <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">{suggestion.reason}</p>
+            <p className="text-[10px] font-bold text-gold-soft uppercase tracking-widest mb-1">AI Pick</p>
+            <p className="text-xs text-muted leading-relaxed line-clamp-3">{suggestion.reason}</p>
           </div>
         )}
 
         {/* Profile / Footer */}
-        <div className="p-4 border-t border-[#33291F]">
-          <button 
+        <div className="p-4 border-t border-line space-y-2">
+          <ThemeToggle value={darkMode} onChange={setDarkMode} showLabel className="w-full py-2" />
+          <button
             type="button"
             onClick={() => setActiveTab('profile')}
             className={`w-full px-3 py-2 flex items-center justify-between rounded-xl transition-all ${
-              activeTab === 'profile' ? 'bg-primary/10 border border-primary/20' : 'hover:bg-white/5 border border-transparent'
+              activeTab === 'profile' ? 'bg-primary/10 border border-primary/20' : 'hover:bg-fg/[0.04] border border-transparent'
             }`}
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="size-8 rounded-full flex-shrink-0 overflow-hidden border-2 border-[#33291F] bg-primary/20">
+              <div className="size-8 rounded-full flex-shrink-0 overflow-hidden border-2 border-line bg-primary/20">
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -121,16 +123,16 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
                     onError={() => setAvatarUrl(null)}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[11px] font-bold text-primary">
+                  <div className="w-full h-full flex items-center justify-center text-[11px] font-bold text-gold-soft">
                     {userName ? userName[0].toUpperCase() : 'U'}
                   </div>
                 )}
               </div>
               <div className="overflow-hidden">
-                <p className={`text-xs font-semibold truncate leading-none ${activeTab === 'profile' ? 'text-primary' : 'text-white'}`}>
+                <p className={`text-xs font-semibold truncate leading-none ${activeTab === 'profile' ? 'text-gold-soft' : 'text-fg'}`}>
                   {userName || 'My Account'}
                 </p>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">View profile</p>
+                <p className="text-[10px] text-subtle mt-0.5 truncate">View profile</p>
               </div>
             </div>
           </button>
@@ -142,26 +144,27 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Mobile top bar */}
-        <header className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-[#17120E]/90 backdrop-blur-md border-b border-[#33291F]">
+        <header className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-canvas/90 backdrop-blur-md border-b border-line">
           <div className="flex items-center gap-2">
-            <div className="size-7 bg-primary rounded-lg flex items-center justify-center text-[#17120E]">
+            <div className="size-7 bg-primary rounded-lg flex items-center justify-center text-[#1F2937]">
               <span className="material-symbols-outlined icon-filled text-[15px]">checkroom</span>
             </div>
-            <span className="font-serif text-base tracking-[0.18em] uppercase">ASANUR</span>
+            <span className="font-serif text-base tracking-[0.12em]">FitCheck <span className="text-gold">AI</span></span>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle value={darkMode} onChange={setDarkMode} className="size-8" />
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1 bg-primary text-[#17120E] px-3 py-1.5 rounded-lg text-xs font-bold"
+              className="flex items-center gap-1 bg-primary text-[#1F2937] px-3 py-1.5 rounded-lg text-xs font-bold"
             >
               <span className="material-symbols-outlined text-[14px]">add</span> Add
             </button>
-            <button type="button" onClick={() => setActiveTab('profile')} className="p-0.5 rounded-full border border-[#33291F] overflow-hidden size-8 flex-shrink-0">
+            <button type="button" onClick={() => setActiveTab('profile')} className="p-0.5 rounded-full border border-line overflow-hidden size-8 flex-shrink-0">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover rounded-full" onError={() => setAvatarUrl(null)} />
               ) : (
-                <span className="material-symbols-outlined text-[20px] text-slate-500 w-full h-full flex items-center justify-center">account_circle</span>
+                <span className="material-symbols-outlined text-[20px] text-subtle w-full h-full flex items-center justify-center">account_circle</span>
               )}
             </button>
           </div>
@@ -174,7 +177,7 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
       </div>
 
       {/* ── Mobile bottom nav ───────────────────────── */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#17120E]/95 backdrop-blur-xl border-t border-[#33291F]">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-canvas/95 backdrop-blur-xl border-t border-line">
         <div className="flex items-center justify-around px-1 py-2">
           {NAV.map(({ id, label, icon }) => {
             const active = activeTab === id;
@@ -184,7 +187,7 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
                 type="button"
                 onClick={() => setActiveTab(id)}
                 className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl transition-colors ${
-                  active ? 'text-primary' : 'text-slate-600'
+                  active ? 'text-gold-soft' : 'text-subtle'
                 }`}
               >
                 <span className={`material-symbols-outlined text-[22px] ${active ? 'icon-filled' : ''}`}>{icon}</span>
@@ -195,7 +198,7 @@ const AppShell = ({ activeTab, setActiveTab, onLogout, darkMode, setDarkMode }) 
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-slate-600"
+            className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-subtle"
           >
             <span className="material-symbols-outlined text-[22px]">add_circle</span>
             <span className="text-[9px] font-bold uppercase tracking-wide truncate w-full text-center">Add</span>

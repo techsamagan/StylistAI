@@ -2,26 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light — soft ivory + luxury gold (RGB triples for Tailwind <alpha-value> tokens) */
 :root {
-  --primary: #B7A98F;
-  --bg: #17120E;
-  --surface: #1E1813;
-  --surface-2: #251D16;
-  --border: #33291F;
-  --border-2: #43372A;
+  --c-canvas:       248 246 242;  /* #F8F6F2 ivory */
+  --c-card:         255 255 255;  /* #FFFFFF */
+  --c-field:        244 241 235;  /* #F4F1EB */
+  --c-beige:        237 232 223;  /* #EDE8DF */
+  --c-line:         229 231 235;  /* #E5E7EB */
+  --c-line-strong:  216 210 199;  /* #D8D2C7 */
+  --c-fg:            23  31  43;  /* #171F2B near-charcoal, a touch darker for legibility */
+  --c-muted:         71  82  98;  /* #475262 darker secondary text */
+  --c-subtle:        99 110 126;  /* #636E7E darker tertiary text */
+  --c-gold:         212 175  55;  /* #D4AF37 */
+  --c-gold-dark:    195 154  40;  /* #C39A28 */
+  --c-gold-soft:    138 106  28;  /* #8A6A1C readable gold on light */
+  --c-error:        239  68  68;  /* #EF4444 */
+  --c-success:       34 197  94;  /* #22C55E */
+}
+
+/* Dark — espresso + gold (the original luxury-dark look, now the dark theme) */
+.dark {
+  --c-canvas:        23  18  14;  /* #17120E espresso */
+  --c-card:          30  24  19;  /* #1E1813 */
+  --c-field:         37  29  22;  /* #251D16 */
+  --c-beige:         37  29  22;  /* #251D16 */
+  --c-line:          51  41  31;  /* #33291F */
+  --c-line-strong:   67  55  42;  /* #43372A */
+  --c-fg:           248 246 240;  /* near-white bone */
+  --c-muted:        194 187 174;  /* lighter warm gray for legibility */
+  --c-subtle:       163 155 142;  /* mid warm gray */
+  --c-gold:         212 175  55;  /* #D4AF37 */
+  --c-gold-dark:    195 154  40;  /* #C39A28 */
+  --c-gold-soft:    227 199 102;  /* #E3C766 readable gold on dark */
+  --c-error:        239  68  68;
+  --c-success:       34 197  94;
 }
 
 @layer base {
+  /* Gentle global size bump for readability (scales all rem-based type ~6%). */
+  html { font-size: 17px; }
   body {
-    font-family: 'Instrument Sans', system-ui, sans-serif;
-    background-color: var(--bg);
-    color: #F6F3EC;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-weight: 450;            /* a touch bolder than normal for easier reading */
+    background-color: rgb(var(--c-canvas));
+    color: rgb(var(--c-fg));
     -webkit-font-smoothing: antialiased;
+    transition: background-color .3s ease, color .3s ease;
   }
-  .font-serif, .wordmark { font-family: 'Fraunces', Georgia, serif; }
-  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  /* Body copy reads a little heavier; headings keep their own weights. */
+  p, li, label, span, a, button, input, select, textarea { font-weight: inherit; }
+  .font-serif, .wordmark { font-family: 'Playfair Display', Georgia, serif; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--c-line-strong)); border-radius: 8px; }
 }
 
 /* ─── Keyframes ─────────────────────────────── */
@@ -47,8 +80,8 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0px rgba(183,169,143,.25); }
-  100% { box-shadow: 0 0 0 12px rgba(183,169,143,0);  }
+  0%   { box-shadow: 0 0 0 0px rgba(212,175,55,.30); }
+  100% { box-shadow: 0 0 0 12px rgba(212,175,55,0);  }
 }
 
 /* ─── Utility classes ───────────────────────── */

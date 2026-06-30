@@ -2,9 +2,9 @@ import React from 'react';
 import { User } from 'lucide-react';
 
 const AuthScreen = ({ onAuthenticate }) => (
-  <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center p-6 text-background-dark dark:text-white">
+  <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center p-6 text-background-dark dark:text-fg">
     <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 text-center border border-gray-100">
-      <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="w-12 h-12 bg-primary/10 text-gold-soft rounded-full flex items-center justify-center mx-auto mb-6">
         <User size={24} />
       </div>
       <h2 className="text-2xl font-medium mb-2">Welcome Back</h2>

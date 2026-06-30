@@ -11,11 +11,11 @@ const Toast = ({ message, onDone }) => {
 
   return (
     <div
-      className={`fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2.5 bg-[#251D16] border border-primary/30 text-white px-4 py-2.5 rounded-xl shadow-2xl shadow-black/40 text-sm font-medium transition-all duration-500 whitespace-nowrap ${
+      className={`fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2.5 bg-field border border-primary/30 text-fg px-4 py-2.5 rounded-xl shadow-2xl shadow-black/10 text-sm font-medium transition-all duration-500 whitespace-nowrap ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
       }`}
     >
-      <span className="material-symbols-outlined icon-filled text-primary text-[16px]">check_circle</span>
+      <span className="material-symbols-outlined icon-filled text-gold-soft text-[16px]">check_circle</span>
       {message}
     </div>
   );

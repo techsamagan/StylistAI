@@ -25,7 +25,7 @@ function getVibeInfo(v) {
 
 const FORMALITY_COLORS = {
   FORMAL:    'text-stone-400 bg-stone-400/10 border-stone-400/20',
-  MODERATE:  'text-primary bg-primary/10 border-primary/20',
+  MODERATE:  'text-gold-soft bg-primary/10 border-primary/20',
   CASUAL:    'text-sky-400 bg-sky-400/10 border-sky-400/20',
   UNIVERSAL: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
 };
@@ -125,14 +125,14 @@ const GeneratorView = () => {
 
       <div className="mb-7 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-light text-white tracking-tight">Style Generator</h1>
-          <p className="text-slate-500 text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
+          <h1 className="text-3xl font-serif font-light text-fg tracking-tight">Style Generator</h1>
+          <p className="text-subtle text-sm mt-1">Tell us the context, set the vibe, get your outfit.</p>
         </div>
         {weather && (
-          <div className="flex items-center gap-2 bg-[#1E1813] border border-[#33291F] px-3 py-1.5 rounded-xl text-sm font-medium">
-            <span className="material-symbols-outlined text-[16px] text-primary">{weather.icon === 'clear_day' ? 'sunny' : 'cloudy'}</span>
-            <span className="text-white">{weather.temp_c?.toFixed(0)}°C</span>
-            <span className="text-slate-500 text-xs hidden sm:inline">— {weather.city?.split(',')[0]}</span>
+          <div className="flex items-center gap-2 bg-card border border-line px-3 py-1.5 rounded-xl text-sm font-medium">
+            <span className="material-symbols-outlined text-[16px] text-gold-soft">{weather.icon === 'clear_day' ? 'sunny' : 'cloudy'}</span>
+            <span className="text-fg">{weather.temp_c?.toFixed(0)}°C</span>
+            <span className="text-subtle text-xs hidden sm:inline">— {weather.city?.split(',')[0]}</span>
           </div>
         )}
       </div>
@@ -143,7 +143,7 @@ const GeneratorView = () => {
 
           {/* Occasion grid */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+            <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-3">
               Where are you going?
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -157,16 +157,16 @@ const GeneratorView = () => {
                     className={`flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all duration-150 ${
                       active
                         ? 'border-primary bg-primary/8 shadow-lg shadow-primary/10'
-                        : 'border-[#33291F] bg-[#1E1813] hover:border-[#43372A] hover:bg-[#251D16]'
+                        : 'border-line bg-card hover:border-line-strong hover:bg-field'
                     }`}
                   >
-                    <span className={`material-symbols-outlined text-[22px] mb-2.5 ${active ? 'text-primary icon-filled' : 'text-slate-500'}`}>
+                    <span className={`material-symbols-outlined text-[22px] mb-2.5 ${active ? 'text-gold-soft icon-filled' : 'text-subtle'}`}>
                       {icon}
                     </span>
-                    <span className={`text-sm font-bold mb-0.5 ${active ? 'text-white' : 'text-slate-300'}`}>
+                    <span className={`text-sm font-bold mb-0.5 ${active ? 'text-fg' : 'text-muted'}`}>
                       {label}
                     </span>
-                    <span className="text-[10px] text-slate-600 leading-tight">{desc}</span>
+                    <span className="text-[10px] text-subtle leading-tight">{desc}</span>
                     {active && (
                       <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary" />
                     )}
@@ -179,16 +179,16 @@ const GeneratorView = () => {
           {/* Vibe slider */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <label className="text-xs font-bold text-muted uppercase tracking-widest">
                 Vibe
               </label>
               <div className="text-right">
-                <span className="text-sm font-bold text-primary">{vibeInfo.label}</span>
-                <span className="text-xs text-slate-500 ml-1.5">— {vibeInfo.desc}</span>
+                <span className="text-sm font-bold text-gold-soft">{vibeInfo.label}</span>
+                <span className="text-xs text-subtle ml-1.5">— {vibeInfo.desc}</span>
               </div>
             </div>
-            <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-5">
-              <div className="flex justify-between text-[10px] font-bold text-slate-600 uppercase tracking-wide mb-3">
+            <div className="bg-card border border-line rounded-2xl p-5">
+              <div className="flex justify-between text-[10px] font-bold text-subtle uppercase tracking-wide mb-3">
                 <span>Comfort</span>
                 <span>Style</span>
               </div>
@@ -212,7 +212,7 @@ const GeneratorView = () => {
                   <span
                     key={label}
                     className={`text-[9px] font-bold transition-colors ${
-                      getVibeInfo(vibe).label === label ? 'text-primary' : 'text-slate-700'
+                      getVibeInfo(vibe).label === label ? 'text-gold-soft' : 'text-subtle'
                     }`}
                   >
                     {i === 0 || i === VIBE_LABELS.length - 1 ? label : '·'}
@@ -223,7 +223,7 @@ const GeneratorView = () => {
           </div>
 
           {error && (
-            <div className="bg-[#9B4A3D]/12 border border-[#9B4A3D]/25 text-[#CF8675] text-sm px-4 py-3 rounded-xl">
+            <div className="bg-error/12 border border-error/25 text-error text-sm px-4 py-3 rounded-xl">
               {error}
             </div>
           )}
@@ -231,7 +231,7 @@ const GeneratorView = () => {
           <button
             type="button"
             onClick={handleGenerate}
-            className="w-full flex items-center justify-center gap-2 bg-primary text-[#17120E] py-3.5 rounded-2xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20"
+            className="w-full flex items-center justify-center gap-2 bg-primary text-[#1F2937] py-3.5 rounded-2xl font-bold text-sm hover:bg-primary/90 active:scale-[.98] transition-all shadow-xl shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
             Generate Outfit
@@ -243,13 +243,13 @@ const GeneratorView = () => {
       {step === 'loading' && (
         <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
           <div className="relative mb-6">
-            <div className="size-16 rounded-full border-2 border-[#33291F] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[28px] text-primary animate-pulse">auto_awesome</span>
+            <div className="size-16 rounded-full border-2 border-line flex items-center justify-center">
+              <span className="material-symbols-outlined text-[28px] text-gold-soft animate-pulse">auto_awesome</span>
             </div>
             <div className="absolute inset-0 rounded-full border-t-2 border-primary animate-spin-slow" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1">Building your look…</h3>
-          <p className="text-slate-500 text-sm">Matching pieces for &ldquo;{context}&rdquo;</p>
+          <h3 className="text-lg font-bold text-fg mb-1">Building your look…</h3>
+          <p className="text-subtle text-sm">Matching pieces for &ldquo;{context}&rdquo;</p>
         </div>
       )}
 
@@ -260,13 +260,13 @@ const GeneratorView = () => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Outfit Ready</span>
-              <h2 className="text-xl font-bold text-white mt-0.5">{context} · {vibeInfo.label}</h2>
+              <span className="text-[10px] font-bold text-gold-soft uppercase tracking-widest">Outfit Ready</span>
+              <h2 className="text-xl font-bold text-fg mt-0.5">{context} · {vibeInfo.label}</h2>
             </div>
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-[#33291F] hover:border-[#43372A]"
+              className="flex items-center gap-1.5 text-xs text-subtle hover:text-fg transition-colors px-3 py-1.5 rounded-lg border border-line hover:border-line-strong"
             >
               <span className="material-symbols-outlined text-[14px]">refresh</span>
               New Look
@@ -274,8 +274,8 @@ const GeneratorView = () => {
           </div>
 
           {/* Explanation */}
-          <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-4">
-            <p className="text-sm text-slate-300 italic leading-relaxed border-l-2 border-primary/40 pl-3">
+          <div className="bg-card border border-line rounded-2xl p-4">
+            <p className="text-sm text-muted italic leading-relaxed border-l-2 border-primary/40 pl-3">
               &ldquo;{outfit.explanation}&rdquo;
             </p>
           </div>
@@ -286,21 +286,21 @@ const GeneratorView = () => {
               {items.map((item, i) => (
                 <div
                   key={item.id}
-                  className="animate-fade-up bg-[#1E1813] border border-[#33291F] rounded-2xl overflow-hidden hover:border-primary/20 transition-all"
+                  className="animate-fade-up bg-card border border-line rounded-2xl overflow-hidden hover:border-primary/20 transition-all"
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <div className="aspect-[4/5] bg-[#17120E] flex items-center justify-center p-4">
+                  <div className="aspect-[4/5] bg-canvas flex items-center justify-center p-4">
                     {item.image_url ? (
                       <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                     ) : (
-                      <span className="material-symbols-outlined text-[40px] text-[#33291F]">checkroom</span>
+                      <span className="material-symbols-outlined text-[40px] text-line">checkroom</span>
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="text-sm font-bold text-white truncate mb-1">{item.name}</p>
+                    <p className="text-sm font-bold text-fg truncate mb-1">{item.name}</p>
                     <div className="flex items-center gap-1.5">
                       {item.category && (
-                        <span className="text-[9px] font-bold text-slate-600 uppercase">{item.category}</span>
+                        <span className="text-[9px] font-bold text-subtle uppercase">{item.category}</span>
                       )}
                       {item.formality && (
                         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${FORMALITY_COLORS[item.formality] || ''}`}>
@@ -313,19 +313,19 @@ const GeneratorView = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-[#1E1813] border border-[#33291F] rounded-2xl p-8 text-center">
-              <span className="material-symbols-outlined text-[36px] text-slate-600 block mb-2">checkroom</span>
-              <p className="text-slate-500 text-sm">No items matched. Add more clothes to your closet.</p>
+            <div className="bg-card border border-line rounded-2xl p-8 text-center">
+              <span className="material-symbols-outlined text-[36px] text-subtle block mb-2">checkroom</span>
+              <p className="text-subtle text-sm">No items matched. Add more clothes to your closet.</p>
             </div>
           )}
 
           {/* Try On Image */}
           {tryOnImage && (
-            <div className="bg-[#1E1813] border border-primary/30 p-2 rounded-2xl animate-fade-in mt-4">
-              <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#17120E]">
+            <div className="bg-card border border-primary/30 p-2 rounded-2xl animate-fade-in mt-4">
+              <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-canvas">
                  <img src={tryOnImage} alt="Virtual Try-On" className="w-full h-full object-cover" />
                  <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                    <span className="material-symbols-outlined text-[14px] text-gold">auto_awesome</span>
                     AI Preview
                  </div>
               </div>
@@ -338,7 +338,7 @@ const GeneratorView = () => {
               type="button"
               onClick={handleSave}
               disabled={saving || !items.length}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#1E1813] border border-[#33291F] text-white py-3 rounded-2xl font-bold text-sm hover:border-[#43372A] disabled:opacity-40 transition-all active:scale-[.98]"
+              className="flex-1 flex items-center justify-center gap-2 bg-card border border-line text-fg py-3 rounded-2xl font-bold text-sm hover:border-line-strong disabled:opacity-40 transition-all active:scale-[.98]"
             >
               <span className="material-symbols-outlined text-[16px]">{saving ? 'hourglass_top' : 'bookmark_add'}</span>
               {saving ? 'Saving…' : 'Save'}
@@ -347,7 +347,7 @@ const GeneratorView = () => {
               type="button"
               onClick={handleTryOn}
               disabled={tryOnLoading || !items.length}
-              className="flex-[2] flex items-center justify-center gap-2 bg-primary text-[#17120E] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
+              className="flex-[2] flex items-center justify-center gap-2 bg-primary text-[#1F2937] py-3 rounded-2xl font-bold text-sm hover:bg-primary/90 disabled:opacity-40 transition-all active:scale-[.98] shadow-lg shadow-primary/15"
             >
               {tryOnLoading ? (
                  <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
@@ -359,7 +359,7 @@ const GeneratorView = () => {
             <button
               type="button"
               onClick={handleGenerate}
-              className="px-4 py-3 border border-[#43372A] text-slate-400 rounded-2xl hover:bg-white/5 hover:text-white transition-all"
+              className="px-4 py-3 border border-line-strong text-muted rounded-2xl hover:bg-fg/[0.04] hover:text-fg transition-all"
               title="Generate another"
             >
               <span className="material-symbols-outlined text-[16px]">refresh</span>

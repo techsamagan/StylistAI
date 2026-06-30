@@ -57,7 +57,9 @@ const App = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    try { localStorage.removeItem('auth_token'); localStorage.removeItem('user_city'); localStorage.removeItem('user_name'); } catch {}
+    try {
+      ['auth_token', 'user_city', 'user_name', 'user_avatar'].forEach(k => localStorage.removeItem(k));
+    } catch {}
     navigate('/');
   };
 
