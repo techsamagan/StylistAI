@@ -1,11 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "cd style_front && npm install && CI=false REACT_APP_API_URL=/api npm run build",
-  "outputDirectory": "style_front/build",
-  "installCommand": "echo \"deps installed inside buildCommand\"",
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index" },
-    { "source": "/((?!api/|static/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "style_front/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    },
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.py" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

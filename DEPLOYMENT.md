@@ -12,8 +12,9 @@ frontend calls the API at `/api` on the same domain.
 
 | File | Purpose |
 |------|---------|
-| `vercel.json` | Build command + output dir for the SPA, and rewrites: `/api/*` and `/uploads/*` → the Python function; all other paths → `index.html` (client-side routing). |
-| `api/index.py` | Serverless entrypoint. Imports the FastAPI app from `style_back`, sets serverless-safe defaults, and strips the `/api` prefix so the backend's routes match. |
+| `vercel.json` | Two `builds` — `@vercel/static-build` compiles `style_front` (the `@vercel/static-build` builder enters that folder itself, so no `cd`), and `@vercel/python` bundles `api/index.py`. `routes` send `/api/*` to the function, serve static files, then fall back to `index.html` for client-side routing. |
+| `style_front/package.json` | A `vercel-build` script (`CI=false react-scripts build`) that `@vercel/static-build` runs, so lint warnings don't fail the build. |
+| `api/index.py` | Serverless entrypoint. Imports the FastAPI app from `style_back`, sets serverless-safe defaults, and mounts it under `/api` so the backend's own routes match. |
 | `requirements.txt` (repo root) | Python deps Vercel installs for the API function. |
 | `.vercelignore` | Keeps `node_modules`, `.venv`, the dev SQLite db, and the generated documents out of the upload. |
 
