@@ -1,0 +1,14 @@
+# Vercel Python serverless dependencies for the FitCheck AI backend.
+# Mirrors style_back/requirements.txt (Vercel reads this file at the repo root
+# to build the /api serverless function).
+fastapi==0.115.6
+python-multipart==0.0.18
+pydantic==2.10.3
+pydantic-settings==2.6.1
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+bcrypt>=4.0.0
+python-dotenv>=1.0.0
+Pillow>=10.0.0
+boto3>=1.34.0
+openai>=1.40.0

@@ -1,0 +1,14 @@
+# Keep the Vercel upload small & clean
+**/node_modules
+**/__pycache__
+**/*.pyc
+style_back/.venv
+style_back/uploads
+style_back/style.db
+style_front/build
+.git
+.gstack
+*.pptx
+*.docx
+docs/*.pptx
+docs/*.docx
