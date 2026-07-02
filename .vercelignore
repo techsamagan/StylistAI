@@ -12,3 +12,4 @@ style_front/build
 *.docx
 docs/*.pptx
 docs/*.docx
+*.pdf
